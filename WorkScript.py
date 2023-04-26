@@ -5,6 +5,7 @@ from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.keys import Keys
 import time
+import os
 import UI
 import Secret
 
@@ -20,12 +21,16 @@ def login_pups(self,username : str, password : str):
     self.add_input(by=By.ID, value ='credential', text = password)
     self.click_button(by=By.CLASS_NAME, value= 'btn btn-primary')
 
-driver.get(Secret.link)
-driver.find_element(By.ID, 'identity').send_keys(Secret.email)
-driver.find_element(By.ID, 'credential').send_keys(Secret.password)
-driver.find_element(By.NAME, "submit").send_keys(Keys.ENTER)
-driver.find_element(By.CLASS_NAME, "form-control").send_keys(Secret.Pack)
-driver.find_element(By.NAME,"submit0").send_keys(Keys.ENTER)
-driver.find_element(By.CLASS_NAME, "jq-remove-pack-button").send_keys(Keys.ENTER)
+
+while True:    
+   driver.get(Secret.link)
+   driver.find_element(By.ID, 'identity').send_keys(Secret.email)
+   driver.find_element(By.ID, 'credential').send_keys(Secret.password)
+   driver.find_element(By.NAME, "submit").send_keys(Keys.ENTER)
+   driver.find_element(By.CLASS_NAME, "form-control").send_keys(Secret.Pack)
+   driver.find_element(By.NAME,"submit0").send_keys(Keys.ENTER)
+   driver.find_element(By.CLASS_NAME, "jq-remove-pack-button").send_keys(Keys.ENTER)
+   time.sleep(3)
 
 
+os.execv(sys.argv[0], sys.argv)
