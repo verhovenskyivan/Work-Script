@@ -5,11 +5,10 @@ from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.keys import Keys
 import time
+import UI
 import Secret
 
-
 s = Service('./WorkScript/chromedriver.exe')                                                              
-
 
 options = webdriver.ChromeOptions()
 options.add_experimental_option("detach", True)
@@ -20,7 +19,6 @@ def login_pups(self,username : str, password : str):
     self.add_input(by=By.ID, value ='identity', text = username)
     self.add_input(by=By.ID, value ='credential', text = password)
     self.click_button(by=By.CLASS_NAME, value= 'btn btn-primary')
-
 
 driver.get(Secret.link)
 driver.find_element(By.ID, 'identity').send_keys(Secret.email)
