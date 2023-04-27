@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 from selenium import webdriver
 from selenium.webdriver import chrome
 from selenium.webdriver.chrome.service import Service
@@ -25,13 +24,12 @@ options.add_experimental_option("detach", True)
 
 
 driver = webdriver.Chrome(options=options, service=Service(ChromeDriverManager().install()))
-  
+
 
 toast = ToastNotifier()
 toast.show_toast(Pack,"Process started")
 
-
-driver.minimize_window()
+driver.maximize_window()
 driver.get(Secret.link)
 driver.find_element(By.ID, 'identity').send_keys(Secret.email)
 driver.find_element(By.ID, 'credential').send_keys(Secret.password)
@@ -41,10 +39,7 @@ driver.find_element(By.NAME,"submit0").send_keys(Keys.ENTER)
 driver.find_element(By.CLASS_NAME, "jq-remove-pack-button").send_keys(Keys.ENTER)
 driver.switch_to.alert.accept()
 time.sleep(1)
-driver.quit()
+driver.close()
 
-if __name__ == '__name__':
-    process = Process(target=driver)
-    process.start()
-    process.join()
+
      
