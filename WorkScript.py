@@ -7,37 +7,28 @@ from selenium.webdriver.common.keys import Keys
 from getpass import getpass
 from multiprocessing import Process
 from win10toast import ToastNotifier
-import time, sys, os, Secret, re, array,itertools
+import time, sys, os, Secret, re, array,itertools, re
+from alive_progress import alive_bar
 
 s = Service('./WorkScript/chromedriver.exe')                                                              
-
-
-with open('Config.txt','r') as file:
-   for details in file:
-      email, password  = details.split(',')
-        
-with open('Link.txt','r') as file:
-    for details in file:
-      link  = details
-
 
 options = webdriver.ChromeOptions()
 options.add_experimental_option("detach", True)
 options.add_argument("--headless=new")
 
-
 driver = webdriver.Chrome(options=options, service=Service(ChromeDriverManager().install()))
-
 
 toast = ToastNotifier()
 toast.show_toast("Process started")
 
-input = input("Enter pack: ")
-Pack = itertools.count()
-Pack = input
-def Get_Pack():
-   Pack
+with open('Config.txt','r') as file:
+   for details in file:
+      email, password  = details.split(',')
+        
+with open('Link.txt','r') as f:
+      link  = f.readline()
 
+Pack = input("Enter pack: ")
 
 def Get_Link():
    driver.get(link)
@@ -56,7 +47,6 @@ def Pack_Delete():
    driver.switch_to.alert.accept()
    
 def Script_First_Part():
-   driver.minimize_window()
    Get_Link()
    User()
 
@@ -66,8 +56,6 @@ def Script_Second_Part():
    time.sleep(1)
    driver.close()
 
-
-Get_Pack()
 Script_First_Part()
 Script_Second_Part()
 
