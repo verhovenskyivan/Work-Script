@@ -7,8 +7,8 @@ from selenium.webdriver.common.keys import Keys
 from getpass import getpass
 from multiprocessing import Process
 from win10toast import ToastNotifier
-import time, sys, os, Secret, re, array,itertools, re
-from alive_progress import alive_bar
+import time
+
 
 s = Service('./WorkScript/chromedriver.exe')                                                              
 
@@ -54,15 +54,16 @@ def Script_Second_Part():
    Pack_Find()
    Pack_Delete()
    time.sleep(1)
-   driver.close()
-
+   driver.refresh()
+   
+if driver.refresh:
+   toast.show_toast(Pack,"Process finished")
+   Pack
+   User()
+   Script_Second_Part()
+   
+Pack
 Script_First_Part()
 Script_Second_Part()
 
-while driver.close:
-   toast.show_toast(Pack,"Process finished")
 
-while True:
-   Script_Second_Part()
-
-     
