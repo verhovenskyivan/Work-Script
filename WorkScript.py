@@ -22,7 +22,12 @@ with open('Config.txt','r') as file:
 with open('Link.txt','r') as f:
       link  = f.readline()
 
-Pack = input("Enter pack: ").split(",")
+Pack_List = []
+
+Pack = int(input("Enter pack: "))
+for i in range(0,Pack(len)):
+   item = int(input())
+   Pack_List.append(item)
 
 driver.get(link)
 
@@ -36,11 +41,16 @@ def Pack_Delete():
    driver.find_element(By.NAME,"submit0").send_keys(Keys.ENTER)
    driver.find_element(By.CLASS_NAME, "jq-remove-pack-button").send_keys(Keys.ENTER)
    driver.switch_to.alert.accept()
-   
+   if driver.find_element(By.CLASS_NAME, "jq-remove-pack-button").send_keys(Keys.ENTER) == Exception:
+      return Pack_Delete()  
+
 Pack_Find()
 Pack_Delete()
 time.sleep(1)
+driver.close()
+
+
+ 
 
 
 
-     
