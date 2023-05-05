@@ -5,7 +5,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.keys import Keys
-import time
+import time, re
 
 s = Service('./WorkScript/chromedriver.exe')                                                              
 
@@ -22,12 +22,10 @@ with open('Config.txt','r') as file:
 with open('Link.txt','r') as f:
       link  = f.readline()
 
-Pack_List = []
-
-Pack = int(input("Enter pack: "))
-for i in range(0,Pack(len)):
-   item = int(input())
-   Pack_List.append(item)
+Pack = input ("Enter pack: ").split(", |")
+Pack_List = [Pack]
+for index, val in enumerate(Pack):
+    Pack_List.append(index)
 
 driver.get(link)
 
