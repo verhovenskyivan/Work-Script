@@ -5,7 +5,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.keys import Keys
-import time, re
+import time, re, sys, os, subprocess
 
 s = Service('./WorkScript/chromedriver.exe')                                                              
 
@@ -22,10 +22,8 @@ with open('Config.txt','r') as file:
 with open('Link.txt','r') as f:
       link  = f.readline()
 
-Pack = input ("Enter pack: ").split(", |")
+Pack = input ("Enter pack: ").split(", | \n")
 Pack_List = [Pack]
-for index, val in enumerate(Pack):
-    Pack_List.append(index)
 
 driver.get(link)
 
@@ -37,15 +35,17 @@ def Pack_Find():
 def Pack_Delete():
    driver.find_element(By.CLASS_NAME, "form-control").send_keys(Pack)
    driver.find_element(By.NAME,"submit0").send_keys(Keys.ENTER)
-   driver.find_element(By.CLASS_NAME, "jq-remove-pack-button").send_keys(Keys.ENTER)
-   driver.switch_to.alert.accept()
-   if driver.find_element(By.CLASS_NAME, "jq-remove-pack-button").send_keys(Keys.ENTER) == Exception:
-      return Pack_Delete()  
-
+   try:
+      driver.find_element(By.CLASS_NAME, "jq-remove-pack-button").send_keys(Keys.ENTER)
+      driver.switch_to.alert.accept()
+   except NoSuchElementException:
+      driver.find_element(By.CLASS_NAME, "form-control").send_keys(Pack)
+      driver.find_element(By.NAME,"submit0").send_keys(Keys.ENTER)
+ 
 Pack_Find()
 Pack_Delete()
 time.sleep(1)
-driver.close()
+subprocess.call([sys.executable, os.path.realpath(__file__)] + sys.argv[1:])
 
 
  
