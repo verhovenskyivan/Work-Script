@@ -5,7 +5,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.keys import Keys
-import time, re, sys, os, subprocess
+import time, sys, os, subprocess
 
 s = Service('./WorkScript/chromedriver.exe')                                                              
 
