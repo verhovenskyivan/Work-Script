@@ -5,7 +5,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.keys import Keys
-import time, sys, os, subprocess
+import time, sys, os, subprocess, logging
 
 s = Service('./WorkScript/chromedriver.exe')                                                              
 
@@ -23,7 +23,6 @@ with open('Link.txt','r') as f:
       link  = f.readline()
 
 Pack = input ("Enter pack: ").split(", | \n")
-Pack_List = [Pack]
 
 driver.get(link)
 
@@ -47,8 +46,8 @@ Pack_Delete()
 time.sleep(1)
 subprocess.call([sys.executable, os.path.realpath(__file__)] + sys.argv[1:])
 
-
- 
-
-
-
+logging.info("INFO")
+logging.warning("WARNING")
+logging.basicConfig(level=logging.WARNING, filename="Logger.log",filemode="a",
+                    format="%(asctime)s %(levelname)s %(message)s")
+logging.error("Error", exc_info=True)
