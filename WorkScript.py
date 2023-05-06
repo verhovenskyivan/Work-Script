@@ -22,7 +22,9 @@ with open('Config.txt','r') as file:
 with open('Link.txt','r') as f:
       link  = f.readline()
 
-Pack = input ("Enter pack: ").split(", | \n")
+Pack = input ("Enter pack: ").split(", | \n : ;")
+#Packs = [float(Pack)for n in Pack[0]]
+#Pack_List = list (map (float, Packs))
 
 driver.get(link)
 
@@ -40,14 +42,18 @@ def Pack_Delete():
    except NoSuchElementException:
       driver.find_element(By.CLASS_NAME, "form-control").send_keys(Pack)
       driver.find_element(By.NAME,"submit0").send_keys(Keys.ENTER)
- 
-Pack_Find()
-Pack_Delete()
-time.sleep(1)
-subprocess.call([sys.executable, os.path.realpath(__file__)] + sys.argv[1:])
+      return "Пак не найден"
 
-logging.info("INFO")
-logging.warning("WARNING")
-logging.basicConfig(level=logging.WARNING, filename="Logger.log",filemode="a",
+
+Pack_Find()
+while True:
+ 
+ Pack_Delete()
+ time.sleep(1)
+ subprocess.call([sys.executable, os.path.realpath(__file__)] + sys.argv[1:])
+
+ logging.info("INFO")
+ logging.warning("WARNING")
+ logging.basicConfig(level=logging.WARNING, filename="Logger.log",filemode="a",
                     format="%(asctime)s %(levelname)s %(message)s")
-logging.error("Error", exc_info=True)
+ logging.error("Error", exc_info=True)
