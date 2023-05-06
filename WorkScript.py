@@ -22,12 +22,20 @@ with open('Config.txt','r') as file:
 with open('Link.txt','r') as f:
       link  = f.readline()
 
+Pack_List = []
+
+#while True:
 Pack = input ("Enter pack: ").split(", | \n : ;")
+Pack_List.append(Pack)
+for Pack in Pack_List:
+     Pack+1
+
 #Packs = [float(Pack)for n in Pack[0]]
 #Pack_List = list (map (float, Packs))
 
-driver.get(link)
 
+driver.get(link)
+ 
 def Pack_Find():
    driver.find_element(By.ID, 'identity').send_keys(email)
    driver.find_element(By.ID, 'credential').send_keys(password)
@@ -46,14 +54,14 @@ def Pack_Delete():
 
 
 Pack_Find()
-while True:
- 
- Pack_Delete()
- time.sleep(1)
- subprocess.call([sys.executable, os.path.realpath(__file__)] + sys.argv[1:])
 
- logging.info("INFO")
- logging.warning("WARNING")
- logging.basicConfig(level=logging.WARNING, filename="Logger.log",filemode="a",
+ 
+Pack_Delete()
+time.sleep(1)
+subprocess.call([sys.executable, os.path.realpath(__file__)] + sys.argv[1:])
+
+logging.info("INFO")
+logging.warning("WARNING")
+logging.basicConfig(level=logging.WARNING, filename="Logger.log",filemode="a",
                     format="%(asctime)s %(levelname)s %(message)s")
- logging.error("Error", exc_info=True)
+logging.error("Error", exc_info=True)
