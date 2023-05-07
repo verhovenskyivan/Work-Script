@@ -22,40 +22,30 @@ with open('Config.txt','r') as file:
 with open('Link.txt','r') as f:
       link  = f.readline()
 
-Pack_List = []
-
-#while True:
+Packs = {}
+def Packs_data():
+    Packs[len(Packs)]= {}
+    Packs[len(Packs)-1][Packs]
 Pack = input ("Enter pack: ").split(", | \n : ;")
-Pack_List.append(Pack)
-for Pack in Pack_List:
-     Pack+1
-
-#Packs = [float(Pack)for n in Pack[0]]
-#Pack_List = list (map (float, Packs))
-
 
 driver.get(link)
  
 def Pack_Find():
-   driver.find_element(By.ID, 'identity').send_keys(email)
-   driver.find_element(By.ID, 'credential').send_keys(password)
-   driver.find_element(By.NAME, "submit").send_keys(Keys.ENTER)
- 
+   driver.find_element(By.ID, 'identity').send_keys(email)#Ввод логина
+   driver.find_element(By.ID, 'credential').send_keys(password)#Ввод пароля
+   driver.find_element(By.NAME, "submit").send_keys(Keys.ENTER)#Авторизация
+
 def Pack_Delete():
-   driver.find_element(By.CLASS_NAME, "form-control").send_keys(Pack)
-   driver.find_element(By.NAME,"submit0").send_keys(Keys.ENTER)
-   try:
-      driver.find_element(By.CLASS_NAME, "jq-remove-pack-button").send_keys(Keys.ENTER)
-      driver.switch_to.alert.accept()
-   except NoSuchElementException:
-      driver.find_element(By.CLASS_NAME, "form-control").send_keys(Pack)
-      driver.find_element(By.NAME,"submit0").send_keys(Keys.ENTER)
-      return "Пак не найден"
-
-
-Pack_Find()
-
- 
+    driver.find_element(By.CLASS_NAME, "form-control").send_keys(Pack)#Ввод в графу поиска
+    driver.find_element(By.NAME,"submit0").send_keys(Keys.ENTER)#Нажатие кнопки поиск
+    try:
+       driver.find_element(By.CLASS_NAME, "jq-remove-pack-button").send_keys(Keys.ENTER)#Нажатие кнопки удаление
+       driver.switch_to.alert.accept()#Свич на алерт и его принятие     
+    except NoSuchElementException:#Обработка ошибки
+       driver.find_element(By.CLASS_NAME, "form-control").send_keys(Pack)
+       driver.find_element(By.NAME,"submit0").send_keys(Keys.ENTER)
+    
+Pack_Find() 
 Pack_Delete()
 time.sleep(1)
 subprocess.call([sys.executable, os.path.realpath(__file__)] + sys.argv[1:])
