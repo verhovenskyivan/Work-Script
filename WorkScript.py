@@ -22,7 +22,7 @@ with open('Config.txt','r') as file:
 with open('Link.txt','r') as f:
       link  = f.readline()
 
-Pack = input ("Enter pack: ").split(", | \n : ;")
+Pack = (map(int, input ("Enter pack: ").split(", | \n : ;")))
 for i in Pack(0, len(Pack)):
    Pack += 1
 
@@ -40,7 +40,7 @@ def Pack_Delete():
       driver.find_element(By.CLASS_NAME, "jq-remove-pack-button").send_keys(Keys.ENTER)#Нажатие кнопки удаление
       driver.switch_to.alert.accept()#Свич на алерт и его принятие     
    except NoSuchElementException:#Обработка ошибки
-       driver.find_element(By.CLASS_NAME, "form-control").send_keys(Pack)
+       driver.find_element(By.CLASS_NAME, "form-control").send_keys(Pack+1)
        driver.find_element(By.NAME,"submit0").send_keys(Keys.ENTER)
     
 Pack_Find() 
