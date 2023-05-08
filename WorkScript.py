@@ -22,11 +22,9 @@ with open('Config.txt','r') as file:
 with open('Link.txt','r') as f:
       link  = f.readline()
 
-Packs = {}
-def Packs_data():
-    Packs[len(Packs)]= {}
-    Packs[len(Packs)-1][Packs]
 Pack = input ("Enter pack: ").split(", | \n : ;")
+for i in Pack(0, len(Pack)):
+   Pack += 1
 
 driver.get(link)
  
@@ -36,12 +34,12 @@ def Pack_Find():
    driver.find_element(By.NAME, "submit").send_keys(Keys.ENTER)#Авторизация
 
 def Pack_Delete():
-    driver.find_element(By.CLASS_NAME, "form-control").send_keys(Pack)#Ввод в графу поиска
-    driver.find_element(By.NAME,"submit0").send_keys(Keys.ENTER)#Нажатие кнопки поиск
-    try:
-       driver.find_element(By.CLASS_NAME, "jq-remove-pack-button").send_keys(Keys.ENTER)#Нажатие кнопки удаление
-       driver.switch_to.alert.accept()#Свич на алерт и его принятие     
-    except NoSuchElementException:#Обработка ошибки
+   driver.find_element(By.CLASS_NAME, "form-control").send_keys(Pack)#Ввод в графу поиска
+   driver.find_element(By.NAME,"submit0").send_keys(Keys.ENTER)#Нажатие кнопки поиск
+   try:
+      driver.find_element(By.CLASS_NAME, "jq-remove-pack-button").send_keys(Keys.ENTER)#Нажатие кнопки удаление
+      driver.switch_to.alert.accept()#Свич на алерт и его принятие     
+   except NoSuchElementException:#Обработка ошибки
        driver.find_element(By.CLASS_NAME, "form-control").send_keys(Pack)
        driver.find_element(By.NAME,"submit0").send_keys(Keys.ENTER)
     
