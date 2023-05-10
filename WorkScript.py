@@ -23,13 +23,7 @@ with open('Link.txt','r') as f:
       link  = f.readline()
 
 Pack = (input ("Enter pack: ").split(", | \n"))
-
-def Pack_List():
-   for Pack in Pack_List:
-      while True:
-         Pack = (input("Enter pack: ").split(", | \n"))
       
-
 driver.get(link)
 
 def Pack_Find():
@@ -38,10 +32,6 @@ def Pack_Find():
    driver.find_element(By.NAME, "submit").send_keys(Keys.ENTER)#Авторизация
 
 def Pack_Delete():
-   while True:
-    Pack = (input ("Enter pack: ").split(", | \n"))
-    for p in Pack (0, len(Pack)):
-       return (Pack[p])
     driver.find_element(By.CLASS_NAME, "form-control").send_keys(Pack)#Ввод в графу поиска
     driver.find_element(By.NAME,"submit0").send_keys(Keys.ENTER)#Нажатие кнопки поиск
     try:
@@ -50,8 +40,7 @@ def Pack_Delete():
     except NoSuchElementException:#Обработка ошибки
        driver.find_element(By.CLASS_NAME, "form-control").send_keys(Pack)
        driver.find_element(By.NAME,"submit0").send_keys(Keys.ENTER)
-
-Pack_List()
+       
 Pack_Find()
 Pack_Delete()
 time.sleep(1)
