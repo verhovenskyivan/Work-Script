@@ -22,9 +22,7 @@ with open('Config.txt','r') as file:
 with open('Link.txt','r') as f:
       link  = f.readline()
 
-Pack_List = list(map(str,input ("Enter pack: ").split(",")))
-
-Pack = (len(list(Pack_List))) 
+Pack = [str(Pack) for Pack in input ("Enter pack: ").split(",")]
 
 driver.get(link)
 
