@@ -22,7 +22,13 @@ with open('Config.txt','r') as file:
 with open('Link.txt','r') as f:
       link  = f.readline()
 
-Pack = [str(Pack) for Pack in input ("Enter pack: ").split(",")]
+Pack_List = [input ("Enter pack: ").split(",")]
+Pack = 0
+while Pack < len(Pack_List):
+   Pack_List[Pack]
+   Pack+=1
+   if Pack >= len(Pack_List):
+      break
 
 driver.get(link)
 
@@ -32,6 +38,11 @@ def Pack_Find():
    driver.find_element(By.NAME, "submit").send_keys(Keys.ENTER)#Авторизация
 
 def Pack_Delete():
+     while Pack < len(Pack_List):
+      Pack_List[Pack]
+      Pack+=1
+      if Pack >= len(Pack_List):
+       break
      driver.find_element(By.CLASS_NAME, "form-control").send_keys(Pack)#Ввод в графу поиска
      driver.find_element(By.NAME,"submit0").send_keys(Keys.ENTER)#Нажатие кнопки поиск
      try:
