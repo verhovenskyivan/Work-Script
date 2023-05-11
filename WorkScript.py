@@ -22,12 +22,7 @@ with open('Config.txt','r') as file:
 with open('Link.txt','r') as f:
       link  = f.readline()
 
-Packs = list()
-Pack = [input ("Enter pack: ").split(",")]
-Pack_List =[Packs + pack for pack in Pack]
-for p in Pack_List:
-   driver.find_element(By.CLASS_NAME, "form-control").send_keys(Pack)
-
+Pack = (input ("Enter pack: ").split(", | \n"))
 
 driver.get(link)
 
@@ -37,10 +32,6 @@ def Pack_Find():
    driver.find_element(By.NAME, "submit").send_keys(Keys.ENTER)#Авторизация
 
 def Pack_Delete():
-   Packs = list()
-   Pack = [input ("Enter pack: ").split(",")]
-   Pack_List =[Packs + pack for pack in Pack]
-   for p in Pack_List:
      driver.find_element(By.CLASS_NAME, "form-control").send_keys(Pack)#Ввод в графу поиска
      driver.find_element(By.NAME,"submit0").send_keys(Keys.ENTER)#Нажатие кнопки поиск
      try:
@@ -49,7 +40,7 @@ def Pack_Delete():
      except NoSuchElementException:#Обработка ошибки
        driver.find_element(By.CLASS_NAME, "form-control").send_keys(Pack)
        driver.find_element(By.NAME,"submit0").send_keys(Keys.ENTER)
-       
+      
 Pack_Find()
 Pack_Delete()
 time.sleep(1)
