@@ -35,6 +35,8 @@ def Pack_Delete():
      driver.find_element(By.CLASS_NAME, "form-control").send_keys(Pack)#Ввод в графу поиска
      driver.find_element(By.NAME,"submit0").send_keys(Keys.ENTER)#Нажатие кнопки поиск
      try:
+      for i in  driver.find_element(By.CLASS_NAME, "jq-remove-pack-button"):
+       driver.find_element(By.CLASS_NAME, "jq-remove-pack-button").send_keys(Keys.ENTER)
       driver.find_element(By.CLASS_NAME, "jq-remove-pack-button").send_keys(Keys.ENTER)#Нажатие кнопки удаление
       driver.switch_to.alert.accept()#Свич на алерт и его принятие     
      except NoSuchElementException:#Обработка ошибки
