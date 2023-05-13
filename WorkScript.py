@@ -7,10 +7,13 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.keys import Keys
 import time, sys, os, subprocess, logging
 import re 
+from tkinter import Tk
+
 s = Service('./WorkScript/chromedriver.exe')                                                              
 
 options = webdriver.ChromeOptions()
 options.add_experimental_option("detach", True)
+options.add_argument("--headless=new")
 
 driver = webdriver.Chrome(options=options, service=Service(ChromeDriverManager().install()))
 
@@ -22,9 +25,18 @@ with open('Link.txt','r') as f:
       link  = f.readline()
 
 Packlist = input ("Enter pack: ")
-delimiters = ";|,|:|\n|\\| "
 
-driver.get(link)
+win = Tk()
+
+cliptext = win.clipboard_get().split('/')
+Link_Start = "https://"
+Pack_Delition_sublink = "/tools/unknownpackremoval"
+Pups_Link = cliptext[2]
+Full_link = Link_Start + Pups_Link + Pack_Delition_sublink
+for link in cliptext.split('/'):
+   print(Full_link)
+
+driver.get(Full_link)
 
 def Pack_Find():
    driver.find_element(By.ID, 'identity').send_keys(email)#Ввод логина
