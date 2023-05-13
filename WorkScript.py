@@ -8,6 +8,7 @@ from selenium.webdriver.common.keys import Keys
 import time, sys, os, subprocess, logging
 import re 
 from tkinter import Tk
+import io
 
 s = Service('./WorkScript/chromedriver.exe')                                                              
 
@@ -17,11 +18,11 @@ options.add_argument("--headless=new")
 
 driver = webdriver.Chrome(options=options, service=Service(ChromeDriverManager().install()))
 
-with open('Config.txt','r') as file:
+with io.open('Config.txt','r') as file:
    for details in file:
       email, password  = details.split(',')
         
-with open('Link.txt','r') as f:
+with io.open('Link.txt','r') as f:
       link  = f.readline()
 
 Packlist = input ("Enter pack: ")
