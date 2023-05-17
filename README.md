@@ -12,10 +12,10 @@ Links:
 
 4) Unpack project to any place you want 
 
-![ava](https://github.com/verhovenskyivan/Work-Script/assets/105872686/34571139-c225-41b0-934e-89b9d32ce75a)
+   ![ava](https://github.com/verhovenskyivan/Work-Script/assets/105872686/34571139-c225-41b0-934e-89b9d32ce75a)
 
 5) To start the script you can run cmd, print python and copy filepath to it like on the screen 
-![image 3](https://github.com/verhovenskyivan/Work-Script/assets/105872686/5ade7193-bbd6-4326-8e12-9f25dd27fd7b)
+  ![image 3](https://github.com/verhovenskyivan/Work-Script/assets/105872686/5ade7193-bbd6-4326-8e12-9f25dd27fd7b)
 
 6) Then follow instructions on the screen, enter email and password to sign in (they must be entered in case of restarting the program)
 
