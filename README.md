@@ -2,8 +2,7 @@ Hello!
 To install the script(s) you need:
 1) Install Python 3(the development process was based on 3.10, but on later versions it must be fine)
 Links:
-       1. https://www.microsoft.com/store/productId/9NRWMJP3717K
-       2. https://www.python.org/downloads/
+        https://www.microsoft.com/store/productId/9NRWMJP3717K or https://www.python.org/downloads/
 
 2) Then you need to check pip version with command pip --version in terminal
 ![image2](https://github.com/verhovenskyivan/Work-Script/assets/105872686/37989b33-26b7-4ed2-bc2a-2a217c5368a5)
