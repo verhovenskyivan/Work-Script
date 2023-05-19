@@ -14,7 +14,7 @@ options.add_experimental_option("detach", True)
 
 driver = webdriver.Chrome(options=options, service=Service(ChromeDriverManager().install()))
 
-driver.get("https://bob-ru.lamoda.tech/tools/axapta")
+driver.get("")
 
 orders = input("Введи заказы: ")
 driver.find_element(By.ID, "input-orders").send_keys(orders.split([";|,|:|\n|\\| "]))
