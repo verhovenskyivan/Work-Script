@@ -26,7 +26,7 @@ def logger():
   logging.basicConfig(level=logging.WARNING, filename="Logger.log",filemode="a",
                    format="%(asctime)s %(levelname)s %(message)s")
   logging.error("Error", exc_info=True)       
-       
+                   
 win = Tk()
 
 def Pups():
@@ -55,12 +55,16 @@ def Pack_Delete():
             print(Pack + " удален")
             driver.find_element(By.CLASS_NAME, "form-control").clear()
          except NoSuchElementException:#Обработка ошибки
-            print(Pack + " не удален")
+            print(Pack + " не удален, его статус: ")
+            driver.find_element(By.CLASS_NAME, "pack-status").get_dom_attribute("value")
+            file_object = open('Паки.txt', 'a')
+            file_object.write(Pack + " не удален", Pups)+ driver.find_element(By.CLASS_NAME, "pack-status").get_dom_attribute() + "\n"
+            file_object.close()      
             driver.find_element(By.CLASS_NAME, "form-control").send_keys(Pack)
             driver.find_element(By.NAME,"submit0").send_keys(Keys.ENTER)
             driver.find_element(By.CLASS_NAME, "form-control").clear()
           
-email = input("Введи адрес электронной почты: ")                    
+email = "ivan.verhovensky"                  
 password =  pwinput.pwinput(prompt = "Введи пароль: ", mask = '*' )   
 
 while True:      
@@ -75,3 +79,4 @@ while True:
    Pack_Find()
    Pack_Delete()  
    time.sleep(1)
+
