@@ -55,28 +55,27 @@ def Pack_Delete():
             print(Pack + " удален")
             driver.find_element(By.CLASS_NAME, "form-control").clear()
          except NoSuchElementException:#Обработка ошибки
-            print(Pack + " не удален, его статус: ")
-            driver.find_element(By.CLASS_NAME, "pack-status").get_dom_attribute("value")
+            print(Pack + " не удален ")
             file_object = open('Паки.txt', 'a')
-            file_object.write(Pack + " не удален", Pups)+ driver.find_element(By.CLASS_NAME, "pack-status").get_dom_attribute() + "\n"
+            file_object.write(Pack + " не удален",)
+            file_object.write("\n")
             file_object.close()      
             driver.find_element(By.CLASS_NAME, "form-control").send_keys(Pack)
             driver.find_element(By.NAME,"submit0").send_keys(Keys.ENTER)
             driver.find_element(By.CLASS_NAME, "form-control").clear()
           
-email = "ivan.verhovensky"                  
-password =  pwinput.pwinput(prompt = "Введи пароль: ", mask = '*' )   
+email = input("Введи почту: ")            
+password =  pwinput.pwinput("Введи пароль: ", mask='*') 
 
 while True:      
-   print("Скопируй ссылку и нажми CTRL + V")  
-   keyboard.wait("CTRL + V")        
+   print("Скопируй ссылку и нажми CTRL + ALT")  
+   keyboard.wait("CTRL + ALT")        
    Pups()
-   print("Скопируй паки и нажми CTRL + V")
-   keyboard.wait("CTRL + V")  
+   print("Скопируй паки и нажми CTRL + ALT")
+   keyboard.wait("CTRL + ALT")  
    email
    password
    Packlist = win.clipboard_get()
    Pack_Find()
-   Pack_Delete()  
-   time.sleep(1)
+   Pack_Delete()
 
