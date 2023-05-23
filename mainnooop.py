@@ -55,7 +55,12 @@ def Pack_Otkaz(Packlist, link, email, password, korob):
             print(Pack + " Перемещен в зону ДВ")
             driver.find_element(By.CLASS_NAME, "form-control").clear()
          except NoSuchElementException:#Обработка ошибки
-            print(Pack + " Не перемещен в зону ДВ")
+            driver.get("/containers/all")
+            driver.find_element(By.ID, "input-search").send_keys(Pack)
+            driver.find_element(By.NAME, "submit0").send_keys(Keys.ENTER)
+            value = driver.find_element(By.XPATH, '//*[@id="list-table"]/tbody/tr[2]/td[6]').text
+            print(Pack + "имеет статус: " + value)
+            Pups()
             driver.find_element(By.CLASS_NAME, "form-control").send_keys(Pack)
             driver.find_element(By.CLASS_NAME, "btn-default").send_keys(Keys.ENTER)
             driver.find_element(By.CLASS_NAME, "form-control").clear()
@@ -74,7 +79,12 @@ def Pack_Delete(Packlist, link, email, password):
             print(Pack + " удален")
             driver.find_element(By.CLASS_NAME, "form-control").clear()
          except NoSuchElementException:#Обработка ошибки
-            print(Pack + " не удален")
+            driver.get("/containers/all")
+            driver.find_element(By.ID, "input-search").send_keys(Pack)
+            driver.find_element(By.NAME, "submit0").send_keys(Keys.ENTER)
+            value = driver.find_element(By.XPATH, '//*[@id="list-table"]/tbody/tr[2]/td[6]').text
+            print(Pack + "имеет статус: " + value)
+            Pups()
             driver.find_element(By.CLASS_NAME, "form-control").send_keys(Pack)
             driver.find_element(By.NAME,"submit0").send_keys(Keys.ENTER)
             driver.find_element(By.CLASS_NAME, "form-control").clear()
@@ -92,6 +102,12 @@ def Pack_DV(Packlist, link, email, password):
             print(Pack + " Перемещен в зону ДВ")
             driver.find_element(By.CLASS_NAME, "form-control").clear()
          except NoSuchElementException:#Обработка ошибки
+            driver.get("/containers/all")
+            driver.find_element(By.ID, "input-search").send_keys(Pack)
+            driver.find_element(By.NAME, "submit0").send_keys(Keys.ENTER)
+            value = driver.find_element(By.XPATH, '//*[@id="list-table"]/tbody/tr[2]/td[6]').text
+            print(Pack + "имеет статус: " + value)
+            Pups()
             print(Pack + " Не перемещен в зону ДВ")
             driver.find_element(By.CLASS_NAME, "form-control").send_keys(Pack)
             driver.find_element(By.CLASS_NAME, "btn-default").send_keys(Keys.ENTER)
@@ -110,7 +126,12 @@ def Pack_Nedopostavka(Packlist, link, email, password):
             print(Pack + " помечен недопоставкой")
             driver.find_element(By.CLASS_NAME, "form-control").clear()
          except NoSuchElementException:#Обработка ошибки
-            print(Pack + " не помечен недопоставкой")
+            driver.get("/containers/all")
+            driver.find_element(By.ID, "input-search").send_keys(Pack)
+            driver.find_element(By.NAME, "submit0").send_keys(Keys.ENTER)
+            value = driver.find_element(By.XPATH, '//*[@id="list-table"]/tbody/tr[2]/td[6]').text
+            print(Pack + "имеет статус: " + value)
+            Pups()
             driver.find_element(By.CLASS_NAME, "form-control").send_keys(Pack)
             driver.find_element(By.NAME, "submit0").send_keys(Keys.ENTER)
             driver.find_element(By.CLASS_NAME, "form-control").clear()
