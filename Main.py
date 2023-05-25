@@ -32,7 +32,7 @@ def Pups(link, email, password, sublink):
     driver.find_element(By.NAME, "submit").send_keys(Keys.ENTER)#Авторизация
    except WebDriverException:
     print("page down")
-
+    
 def Pack_act(Packlist, link, email, password, sublink, search_button, act_button, actiontype):
    Pups(link, email, password, sublink)
    for Pack in re.split('[";|,|:|\n|\\| "]',Packlist): 
@@ -41,12 +41,14 @@ def Pack_act(Packlist, link, email, password, sublink, search_button, act_button
          driver.find_element(By.CLASS_NAME, "form-control").send_keys(Pack)#Ввод в графу поиска
          driver.find_element(By.NAME,search_button).send_keys(Keys.ENTER)#Нажатие кнопки поиск
          try:
-            driver.find_element(By.CLASS_NAME, act_button).send_keys(Keys.ENTER)#Нажатие кнопки удаление
+            driver.find_element(By.CLASS_NAME, act_button).send_keys(Keys.ENTER)#Нажатие кнопки 
             driver.switch_to.alert.accept()#Свич на алерт и его принятие 
             print(Pack + actiontype)
+            t.insert(tk.END, Pack + actiontype)
             driver.find_element(By.CLASS_NAME, "form-control").clear()
          except NoSuchElementException:#Обработка ошибки
             print(Pack + "Не"+ actiontype)
+            t.insert(tk.END, Pack + "Не"+ actiontype)
             file_object = open('Паки.txt', 'a')
             file_object.write(Pack + "Не"+ actiontype + link[2])
             file_object.write("\n")
@@ -55,18 +57,17 @@ def Pack_act(Packlist, link, email, password, sublink, search_button, act_button
             link_create(link, sublink)
 
 def packstatus(Packlist, link, email, password, status_sublink):
-   Pups(link, email, password, status_sublink)
+   Pups(link, email, password, status_sublink) 
    for Pack in re.split('[";|,|:|\n|\\| "]', Packlist):
-     if Pack != '':
-        try:
+      if Pack != '':
+         try:
             driver.find_element(By.ID, "input-search").send_keys(Pack)
             driver.find_element(By.NAME, "submit0").send_keys(Keys.ENTER)
             value = driver.find_element(By.XPATH, '//*[@id="list-table"]/tbody/tr[2]/td[6]').text
-            print(Pack + "имеет статус: " + value)
             quant = driver.find_element(By.XPATH, '//*[@id="list-table"]/tbody/tr[2]/td[8]').text
-            print(Pack + "имеет кол-во товаров: " + quant)
+            t.insert(tk.END, Pack + "имеет статус: " + value + "имеет кол-во товаров: " + quant)
             driver.find_element(By.ID, "input-search").clear()
-        except NoSuchElementException:#Обработка ошибки
+         except NoSuchElementException:#Обработка ошибки
             print(Pack + 'Не существует')
 
 #Конец команд и фукнций
