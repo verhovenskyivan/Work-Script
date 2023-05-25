@@ -7,12 +7,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.keys import Keys
-import time 
-import logging
 import re
-import keyboard
-import pwinput
-import threading
 import tkinter as tk
 from selenium.common.exceptions import WebDriverException
 
@@ -61,10 +56,9 @@ def Pack_act(Packlist, link, email, password, sublink, search_button, act_button
 
 def packstatus(Packlist, link, email, password, status_sublink):
    Pups(link, email, password, status_sublink)
-   
    for Pack in re.split('[";|,|:|\n|\\| "]', Packlist):
-    if Pack != '':
-     try:
+     if Pack != '':
+        try:
             driver.find_element(By.ID, "input-search").send_keys(Pack)
             driver.find_element(By.NAME, "submit0").send_keys(Keys.ENTER)
             value = driver.find_element(By.XPATH, '//*[@id="list-table"]/tbody/tr[2]/td[6]').text
@@ -72,8 +66,12 @@ def packstatus(Packlist, link, email, password, status_sublink):
             quant = driver.find_element(By.XPATH, '//*[@id="list-table"]/tbody/tr[2]/td[8]').text
             print(Pack + "имеет кол-во товаров: " + quant)
             driver.find_element(By.ID, "input-search").clear()
-     except NoSuchElementException:#Обработка ошибки
+        except NoSuchElementException:#Обработка ошибки
             print(Pack + 'Не существует')
+
+#Конец команд и фукнций
+
+#Начало интерфейса
 
 root = tk.Tk()
 root.title("FirstLine Helper")
@@ -86,6 +84,12 @@ style = Style()
 style.map('TButton', foreground = ([('active', 'black')]))                    
 style.configure("TButton", font=("Arial", 10),bold=True, borderwidth=2)
 
+def Link_temp_text(e):
+   Link_entry.delete(0,"end")
+
+def Pack_temp_text(e):
+   packs_entry.delete(0,"end")
+
 def clear():
     packs_entry.delete(0, END)
     packs_entry.insert(0, "Введи паки")
@@ -93,6 +97,14 @@ def clear():
     Link_entry.insert(0, "Введи ссылку")
 
 tk.Label(first_frame, text="EXPRESS_PUPS", relief=RAISED).grid(row=0, column=0, padx=100, pady=3)
+
+tk.Label(text="Логин").grid(row=1, column=0, padx=(10,160), pady=3)
+login_entry = tk.Entry(root, width=20)
+login_entry.grid(row=2, column=0, padx=(10,160), pady=3)
+
+tk.Label(text="Пароль").grid(row=1, column=0, padx=(160,10), pady=3)
+pass_entry = tk.Entry(root, show="*", width=20)
+pass_entry.grid(row=2, column=0, padx=(160,10), pady=3)
 
 tk.Label(text="Логин").grid(row=1, column=0, padx=5, pady=3)
 login_entry = tk.Entry(root, width=20)
@@ -105,10 +117,12 @@ pass_entry.grid(row=4, column=0, padx=0, pady=5)
 Link_entry = tk.Entry(root, width=40)
 Link_entry.grid(row=5, column=0, padx=5, pady=5)
 Link_entry.insert(0, "Введи ссылку")
+Link_entry.bind("<FocusIn>", Link_temp_text)
 
 packs_entry = tk.Entry(root, width=40)
 packs_entry.grid(row=6, column=0, padx=5, pady=5)
 packs_entry.insert(0, "Введи паки")
+packs_entry.bind("<FocusIn>", Pack_temp_text)
 
 DB = tk.Button(text="Удалить паки", command=lambda: [Pack_act(packs_entry.get(), Link_entry.get(), login_entry.get(), pass_entry.get(), '/tools/unknown_pack_removal', "submit0", "jq-remove-pack-button", " удален"), clear()]) 
 DB.grid(row=7, column=0, padx=10, pady=5,  sticky="nsew")
@@ -118,5 +132,11 @@ DVB = tk.Button(text="Переместить в зону ДВ", command=lambda: 
 DVB.grid(row=9, column=0, padx=10, pady=5, sticky="nsew")
 Statusbt = tk.Button(text="Статус паков", command=lambda: packstatus(packs_entry.get(), Link_entry.get(), login_entry.get(), pass_entry.get(), '/containers/all/'))
 Statusbt.grid(row=10, column=0, padx=10, pady=5, sticky="nsew")
+
+t = Text(root, height=5, width=35)
+t.insert(tk.END, Pack_act)
+t.grid(row = 11, column=0)
+t_label = tk.Label(text="",font="Arial, 15")
+t_label.grid(row = 12, column=0)
 
 root.mainloop()
