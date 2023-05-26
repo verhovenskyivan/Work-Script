@@ -26,13 +26,13 @@ def link_create(linkd, sublink):
 
 def Pups(link, email, password, sublink):
    try:
-    link_create(link, sublink)
-    driver.find_element(By.ID, 'identity').send_keys(email)#Ввод логина
-    driver.find_element(By.ID, 'credential').send_keys(password)#Ввод пароля
-    driver.find_element(By.NAME, "submit").send_keys(Keys.ENTER)#Авторизация
+      link_create(link, sublink)
+      driver.find_element(By.ID, 'identity').send_keys(email)#Ввод логина
+      driver.find_element(By.ID, 'credential').send_keys(password)#Ввод пароля
+      driver.find_element(By.NAME, "submit").send_keys(Keys.ENTER)#Авторизация
    except WebDriverException:
-    print("page down")
-    
+      print("page down")
+
 def Pack_act(Packlist, link, email, password, sublink, search_button, act_button, actiontype):
    Pups(link, email, password, sublink)
    for Pack in re.split('[";|,|:|\n|\\| "]',Packlist): 
@@ -41,14 +41,12 @@ def Pack_act(Packlist, link, email, password, sublink, search_button, act_button
          driver.find_element(By.CLASS_NAME, "form-control").send_keys(Pack)#Ввод в графу поиска
          driver.find_element(By.NAME,search_button).send_keys(Keys.ENTER)#Нажатие кнопки поиск
          try:
-            driver.find_element(By.CLASS_NAME, act_button).send_keys(Keys.ENTER)#Нажатие кнопки 
+            driver.find_element(By.CLASS_NAME, act_button).send_keys(Keys.ENTER)#Нажатие кнопки удаление
             driver.switch_to.alert.accept()#Свич на алерт и его принятие 
             print(Pack + actiontype)
-            t.insert(tk.END, Pack + actiontype)
             driver.find_element(By.CLASS_NAME, "form-control").clear()
          except NoSuchElementException:#Обработка ошибки
             print(Pack + "Не"+ actiontype)
-            t.insert(tk.END, Pack + "Не"+ actiontype)
             file_object = open('Паки.txt', 'a')
             file_object.write(Pack + "Не"+ actiontype + link[2])
             file_object.write("\n")
@@ -57,17 +55,18 @@ def Pack_act(Packlist, link, email, password, sublink, search_button, act_button
             link_create(link, sublink)
 
 def packstatus(Packlist, link, email, password, status_sublink):
-   Pups(link, email, password, status_sublink) 
+   Pups(link, email, password, status_sublink)
    for Pack in re.split('[";|,|:|\n|\\| "]', Packlist):
-      if Pack != '':
-         try:
+     if Pack != '':
+        try:
             driver.find_element(By.ID, "input-search").send_keys(Pack)
             driver.find_element(By.NAME, "submit0").send_keys(Keys.ENTER)
             value = driver.find_element(By.XPATH, '//*[@id="list-table"]/tbody/tr[2]/td[6]').text
+            print(Pack + "имеет статус: " + value)
             quant = driver.find_element(By.XPATH, '//*[@id="list-table"]/tbody/tr[2]/td[8]').text
-            t.insert(tk.END, Pack + "имеет статус: " + value + "имеет кол-во товаров: " + quant)
+            print(Pack + "имеет кол-во товаров: " + quant)
             driver.find_element(By.ID, "input-search").clear()
-         except NoSuchElementException:#Обработка ошибки
+        except NoSuchElementException:#Обработка ошибки
             print(Pack + 'Не существует')
 
 #Конец команд и фукнций
@@ -104,19 +103,11 @@ login_entry = tk.Entry(root, width=20)
 login_entry.grid(row=2, column=0, padx=(10,160), pady=3)
 
 tk.Label(text="Пароль").grid(row=1, column=0, padx=(160,10), pady=3)
-pass_entry = tk.Entry(root, show="*", width=20)
+pass_entry = tk.Entry(root, show="*", width=20) 
 pass_entry.grid(row=2, column=0, padx=(160,10), pady=3)
 
-tk.Label(text="Логин").grid(row=1, column=0, padx=5, pady=3)
-login_entry = tk.Entry(root, width=20)
-login_entry.grid(row=2, column=0, padx=0, pady=5)
-
-tk.Label(text="Пароль").grid(row=3, column=0, padx=5, pady=3)
-pass_entry = tk.Entry(root, show="*", width=20)
-pass_entry.grid(row=4, column=0, padx=0, pady=5)
-
-Link_entry = tk.Entry(root, width=40)
-Link_entry.grid(row=5, column=0, padx=5, pady=5)
+Link_entry = tk.Entry(root, width=20)
+Link_entry.grid(row=5, column=0, padx=(10,160), pady=5)
 Link_entry.insert(0, "Введи ссылку")
 Link_entry.bind("<FocusIn>", Link_temp_text)
 
@@ -139,5 +130,7 @@ t.insert(tk.END, Pack_act)
 t.grid(row = 11, column=0)
 t_label = tk.Label(text="",font="Arial, 15")
 t_label.grid(row = 12, column=0)
+
+
 
 root.mainloop()
