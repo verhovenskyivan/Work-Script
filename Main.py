@@ -15,8 +15,9 @@ s = Service('./workscript-main/chromedriver.exe')
 options = webdriver.ChromeOptions()
 options.add_experimental_option("detach", True)
 options.add_argument("--headless")
+options.add_argument = {'user-data-dir':'/Users/Application/Chrome/Default'}
 driver = webdriver.Chrome(options = options, service=Service(ChromeDriverManager().install()))
-
+driver = webdriver.Chrome(executable_path="C:\chromedriver.exe", options=options)
 def link_create(linkd, sublink):
    link = linkd.split('/')
    Link_Start = 'https://'
