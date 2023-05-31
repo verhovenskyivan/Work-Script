@@ -6,6 +6,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from tkinter.scrolledtext import *
 from selenium import webdriver
+from tkinter import filedialog
 from tkinter.ttk import *
 from tkinter import *
 import tkinter as tk
@@ -17,7 +18,7 @@ options.add_experimental_option("detach", True)
 options.add_argument("--headless")
 options.add_argument = {'user-data-dir':'/Users/Application/Chrome/Default'}
 driver = webdriver.Chrome(options = options, service=Service(ChromeDriverManager().install()))
-driver = webdriver.Chrome(executable_path="C:\chromedriver.exe", options=options)
+
 def link_create(linkd, sublink):
    link = linkd.split('/')
    Link_Start = 'https://'
@@ -105,10 +106,25 @@ def packstatus(Packlist, link, email, password, status_sublink):
             value = driver.find_element(By.XPATH, '//*[@id="list-table"]/tbody/tr[2]/td[6]').text
             t.insert(INSERT,"\n" + Pack + " имеет статус:" + "\n" + value) 
             quant = driver.find_element(By.XPATH, '//*[@id="list-table"]/tbody/tr[2]/td[8]').text
-            t.insert(INSERT, "\n" + Pack + " Кол-во товаров: " + quant + "\n" )
+            t.insert(INSERT, ( "\n" + Pack  + " Кол-во товаров: " + quant + "\n" ))
             driver.find_element(By.ID, "input-search").clear()
          except NoSuchElementException:#Обработка ошибки  
-            t.insert(INSERT, Pack + ' Не существует' + "\n")        
+             t.insert(INSERT, Pack + ' Не существует' + "\n")        
+             
+"""def Sold_sender(Orderlist, link, email, password, sublink, search_button):
+   Pups(link, email, password, sublink)
+   for Order in re.split('[";|,|:|\n|\\|/|//| "]',Orderlist): 
+      if Order != '': 
+         driver.find_element(By.CLASS_NAME, "form-control").send_keys(Order)#Ввод в графу поиска
+         driver.find_element(By.CLASS_NAME, search_button).send_keys(Keys.ENTER)#Нажатие кнопки поиск
+         try:
+            driver.find_element(By.LINK_TEXT, 'sold')
+            driver.find_element(By.CLASS_NAME, 'ajax queue-restart' ).send_keys(Keys.ENTER)
+            driver.find_element(By.LINK_TEXT, 'arrive')
+            driver.find_element(By.CLASS_NAME, 'ajax queue-restart' ).send_keys(Keys.ENTER)
+         except NoSuchElementException:
+            print ("No such element")"""
+             
 #Конец команд и фукнций
 
 #Начало интерфейса
@@ -182,9 +198,10 @@ Statusbtn = tk.Button(text = "Статус паков", bg = 'White', command = 
 Statusbtn.grid(row = 11, column = 0, padx = 10, pady = 5, sticky = "nsew")
 
 t = ScrolledText(root, height = 5, width = 35, wrap = WORD)
-t.yview(END)
-t.see(END)
+t.yview("end")
+t.see("end")
 t.grid(row = 12, column = 0)
+
 
 #t_label = tk.Label(font = "Arial, 12")    
 #t_label.grid(row = 12, column = 0)
