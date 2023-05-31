@@ -6,7 +6,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from tkinter.scrolledtext import *
 from selenium import webdriver
-from tkinter import filedialog
+import pyexpat
 from tkinter.ttk import *
 from tkinter import *
 import tkinter as tk
@@ -75,13 +75,14 @@ def Pack_Perenos(Packlist, link, email, password, sublink, search_button, act_bu
             packstatus(Packlist, link, email, password, sublink)
             link_create(link, sublink)
 
-def Pack_Korob(Packlist, link, email, password, sublink, search_button, korob, act_button, actiontype):
+def Pack_Korob(Packlist, link, email, password, korob, sublink, search_button, act_button, actiontype):
     Pups(link, email, password, sublink)
     for Pack in re.split('[";|,|:|\n|\\|/|//| "]',Packlist): 
       if Pack != '': 
          driver.find_element(By.CLASS_NAME, "form-control").send_keys(Pack)#Ввод в графу поиска
          driver.find_element(By.XPATH, search_button).send_keys(Keys.ENTER)#Нажатие кнопки поиск
          try:
+            get_korob(korob)
             driver.find_element(By.XPATH, '//*[@id="layout-container-inner"]/div/form/div/input[3]').send_keys(korob)
             driver.find_element(By.CLASS_NAME, act_button).send_keys(Keys.ENTER)#Нажатие кнопки удаление
             driver.switch_to.alert.accept()#Свич на алерт и его принятие 
@@ -147,10 +148,17 @@ def Pack_temp_text(e):
    packs_entry.delete(0, "end")
 
 def clear():
-    packs_entry.delete(0, END)
-    packs_entry.insert(0, "Введи паки")
-    Link_entry.delete(0, END)
-    Link_entry.insert(0, "Введи ссылку")
+   packs_entry.delete(0, END)
+   packs_entry.insert(0, "Введи паки")
+   Link_entry.delete(0, END)
+   Link_entry.insert(0, "Введи ссылку")
+
+def get_korob():
+   korob_entry = Toplevel()
+   korob = tk.Entry(korob_entry, width= 45)
+   korob.insert(0, "Введи Короб:")
+   korob.grid()
+   korob_entry.focus_force()
       
 tk.Label(first_frame, text = "F1RST LINE", bg = 'White', relief = RAISED).grid(row = 0, column = 0, padx = 100, pady = 3)
 
@@ -187,9 +195,9 @@ DVB = tk.Button(text = "Переместить в зону ДВ", bg = 'White', 
       '/tools/move_pack_to_clearance_zone', "btn-default", "btn-default", " Перемещен в зону ДВ"), clear()])
 DVB.grid(row = 9, column = 0, padx = 10, pady = 5, sticky = "nsew")
 
-PKO = tk.Button(text = "Переместить паки в короб отказов", bg = 'White', command = lambda: [Pack_Korob(
+PKO = tk.Button(text = "Переместить паки в короб отказов", bg = 'White', command = lambda: [get_korob(), Pack_Korob(
    packs_entry.get(), Link_entry.get(), login_entry.get(), pass_entry.get(),
-      '/tools/move_objects_to_rejectbox', '//*[@id="filterForm"]/button', korob_entry.get(), "btn btn-default", " Перемещен в короб отказов"), clear()])
+      '/tools/move_objects_to_rejectbox', '//*[@id="filterForm"]/button', "btn btn-default", " Перемещен в короб отказов"), clear()])
 PKO.grid(row = 10, column = 0, padx = 10, pady = 5, sticky = "nsew")
 
 Statusbtn = tk.Button(text = "Статус паков", bg = 'White', command = lambda: packstatus(
@@ -205,10 +213,6 @@ t.grid(row = 12, column = 0)
 
 #t_label = tk.Label(font = "Arial, 12")    
 #t_label.grid(row = 12, column = 0)
-
-korob_entry = Entry(root, width= 25)
-korob_entry.insert(0, "Введи Короб:")
-korob_entry.grid()
 
 s = Scrollbar(root, orient = VERTICAL)
 s.grid(row = 12, column = 0,  padx=(280, 0), pady=(0, 25), sticky = "nsew") 
