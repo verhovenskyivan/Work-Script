@@ -6,11 +6,11 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from tkinter.scrolledtext import *
 from selenium import webdriver
-import pyexpat
+from functools import cache
 from tkinter.ttk import *
 from tkinter import *
 import tkinter as tk
-import  re
+import  re, time
 
 s = Service('./workscript-main/chromedriver.exe')
 options = webdriver.ChromeOptions()
@@ -19,6 +19,7 @@ options.add_argument("--headless")
 options.add_argument = {'user-data-dir':'/Users/Application/Chrome/Default'}
 driver = webdriver.Chrome(options = options, service=Service(ChromeDriverManager().install()))
 
+@cache
 def link_create(linkd, sublink):
    link = linkd.split('/')
    Link_Start = 'https://'
@@ -26,6 +27,7 @@ def link_create(linkd, sublink):
    Full_link = Link_Start + Pups_Link + sublink
    driver.get(Full_link) 
 
+@cache
 def Pups(link, email, password, sublink):
    try:
       link_create(link, sublink)
@@ -34,33 +36,14 @@ def Pups(link, email, password, sublink):
       driver.find_element(By.NAME, "submit").send_keys(Keys.ENTER)#Авторизация
    except WebDriverException:
       t.insert(INSERT, "\n" + "page down" + "\n")
-
+      
+@cache
 def Pack_act(Packlist, link, email, password, sublink, search_button, act_button, actiontype,):
    Pups(link, email, password, sublink)
    for Pack in re.split('[";|,|:|\n|\\|/|//| "]',Packlist): 
       if Pack != '': 
          driver.find_element(By.CLASS_NAME, "form-control").send_keys(Pack)#Ввод в графу поиска
          driver.find_element(By.NAME, search_button).send_keys(Keys.ENTER)#Нажатие кнопки поиск
-         try:
-            driver.find_element(By.CLASS_NAME, act_button).send_keys(Keys.ENTER)#Нажатие кнопки удаление
-            driver.switch_to.alert.accept()#Свич на алерт и его принятие 
-            t.insert(INSERT, + Pack + actiontype )
-            driver.find_element(By.CLASS_NAME, "form-control").clear()
-         except NoSuchElementException:#Обработка ошибки
-            t.insert(INSERT, Pack + " Не"+ actiontype + "\n")
-            file_object = open('Паки.txt', 'a')
-            file_object.write(Pack + "Не"+ actiontype + link[2])
-            file_object.write("\n")
-            file_object.close() 
-            packstatus(Packlist, link, email, password, sublink)
-            link_create(link, sublink)
-
-def Pack_Perenos(Packlist, link, email, password, sublink, search_button, act_button, actiontype,):
-    Pups(link, email, password, sublink)
-    for Pack in re.split('[";|,|:|\n|\\|/|//| "]',Packlist): 
-      if Pack != '': 
-         driver.find_element(By.CLASS_NAME, "form-control").send_keys(Pack)#Ввод в графу поиска
-         driver.find_element(By.CLASS_NAME, search_button).send_keys(Keys.ENTER)#Нажатие кнопки поиск
          try:
             driver.find_element(By.CLASS_NAME, act_button).send_keys(Keys.ENTER)#Нажатие кнопки удаление
             driver.switch_to.alert.accept()#Свич на алерт и его принятие 
@@ -75,6 +58,29 @@ def Pack_Perenos(Packlist, link, email, password, sublink, search_button, act_bu
             packstatus(Packlist, link, email, password, sublink)
             link_create(link, sublink)
 
+@cache
+def Pack_Perenos(Packlist, link, email, password, sublink, search_button, act_button, actiontype,):
+    Pups(link, email, password, sublink)
+    for Pack in re.split('[";|,|:|\n|\\|/|//| "]',Packlist): 
+      if Pack != '': 
+         driver.find_element(By.CLASS_NAME, "form-control").send_keys(Pack)#Ввод в графу поиска
+         driver.find_element(By.CLASS_NAME, search_button).send_keys(Keys.ENTER)#Нажатие кнопки поиск
+         try:
+            driver.find_element(By.CLASS_NAME, act_button).send_keys(Keys.ENTER)#Нажатие кнопки удаление
+            driver.switch_to.alert.accept()#Свич на алерт и его принятие 
+            t.insert(INSERT, Pack + actiontype + "\n") + time.sleep(0.5)
+            driver.find_element(By.CLASS_NAME, "form-control").clear()
+         except NoSuchElementException:#Обработка ошибки
+            t.insert(INSERT, Pack + " Не"+ actiontype + "\n")
+            t.update()
+            file_object = open('Паки.txt', 'a')
+            file_object.write(Pack + "Не"+ actiontype + link[2])
+            file_object.write("\n")
+            file_object.close() 
+            packstatus(Packlist, link, email, password, sublink)
+            link_create(link, sublink)
+
+@cache
 def Pack_Korob(Packlist, link, email, password, korob, sublink, search_button, act_button, actiontype):
     Pups(link, email, password, sublink)
     for Pack in re.split('[";|,|:|\n|\\|/|//| "]',Packlist): 
@@ -87,16 +93,19 @@ def Pack_Korob(Packlist, link, email, password, korob, sublink, search_button, a
             driver.find_element(By.CLASS_NAME, act_button).send_keys(Keys.ENTER)#Нажатие кнопки удаление
             driver.switch_to.alert.accept()#Свич на алерт и его принятие 
             t.insert(INSERT, Pack + actiontype + "\n")
+            t.update()
             driver.find_element(By.CLASS_NAME, "form-control").clear()
          except NoSuchElementException:#Обработка ошибки
             t.insert(INSERT, Pack + " Не"+ actiontype + "\n")
+            t.update()
             file_object = open('Паки.txt', 'a')
             file_object.write(Pack + "Не"+ actiontype + link[2])
             file_object.write("\n")
-            file_object.close() 
+            file_object.close()
             packstatus(Packlist, link, email, password, sublink)
             link_create(link, sublink)
-   
+            
+@cache   
 def packstatus(Packlist, link, email, password, status_sublink):
    Pups(link, email, password, status_sublink)
    for Pack in re.split('[";|,|:|\n|\\|/|//| "]', Packlist):
@@ -105,14 +114,17 @@ def packstatus(Packlist, link, email, password, status_sublink):
             driver.find_element(By.ID, "input-search").send_keys(Pack)
             driver.find_element(By.NAME, "submit0").send_keys(Keys.ENTER)
             value = driver.find_element(By.XPATH, '//*[@id="list-table"]/tbody/tr[2]/td[6]').text
-            t.insert(INSERT,"\n" + Pack + " имеет статус:" + "\n" + value) 
+            t.insert(INSERT,"\n" + Pack + " имеет статус:" + "\n" + value)
+            t.update()
             quant = driver.find_element(By.XPATH, '//*[@id="list-table"]/tbody/tr[2]/td[8]').text
-            t.insert(INSERT, ( "\n" + Pack  + " Кол-во товаров: " + quant + "\n" ))
+            t.insert(INSERT, "\n" + Pack  + " Кол-во товаров: " + quant + "\n" )
+            t.update()
             driver.find_element(By.ID, "input-search").clear()
          except NoSuchElementException:#Обработка ошибки  
-             t.insert(INSERT, Pack + ' Не существует' + "\n")        
+             t.insert(INSERT, Pack + ' Не существует' + "\n")
+             t.update()
              
-"""def Sold_sender(Orderlist, link, email, password, sublink, search_button):
+def Sold_sender(Orderlist, link, email, password, sublink, search_button):
    Pups(link, email, password, sublink)
    for Order in re.split('[";|,|:|\n|\\|/|//| "]',Orderlist): 
       if Order != '': 
@@ -124,23 +136,8 @@ def packstatus(Packlist, link, email, password, status_sublink):
             driver.find_element(By.LINK_TEXT, 'arrive')
             driver.find_element(By.CLASS_NAME, 'ajax queue-restart' ).send_keys(Keys.ENTER)
          except NoSuchElementException:
-            print ("No such element")"""
-             
-#Конец команд и фукнций
-
-#Начало интерфейса
-root = tk.Tk()
-root.title("Pack Helper")
-root.geometry("300x450")
-root['background'] = 'White'
-
-first_frame = tk.Frame(root, bg = 'white', width = 200, height = 400)
-first_frame.grid(row = 0, column = 0, padx = 5, pady = 5)
-
-style = Style()
-style.map('TButton', foreground = ([('active', 'black')]))                    
-style.configure("TButton", font=("Arial", 10),bold = True, borderwidth = 2)
-
+            print ("No such element")
+                      
 def Link_temp_text(e):
    Link_entry.delete(0, "end")
 
@@ -158,7 +155,21 @@ def get_korob():
    korob = tk.Entry(korob_entry, width= 45)
    korob.insert(0, "Введи Короб:")
    korob.grid()
-   korob_entry.focus_force()
+   korob_entry.focus_force()                
+#Конец команд и фукнций
+
+#Начало интерфейса
+root = tk.Tk()
+root.title("Pack Helper")
+root.geometry("300x450")
+root['background'] = 'White'
+
+first_frame = tk.Frame(root, bg = 'white', width = 200, height = 400)
+first_frame.grid(row = 0, column = 0, padx = 5, pady = 5)
+
+style = Style()
+style.map('TButton', foreground = ([('active', 'black')]))                    
+style.configure("TButton", font=("Arial", 10),bold = True, borderwidth = 2)
       
 tk.Label(first_frame, text = "F1RST LINE", bg = 'White', relief = RAISED).grid(row = 0, column = 0, padx = 100, pady = 3)
 
@@ -209,10 +220,6 @@ t = ScrolledText(root, height = 5, width = 35, wrap = WORD)
 t.yview("end")
 t.see("end")
 t.grid(row = 12, column = 0)
-
-
-#t_label = tk.Label(font = "Arial, 12")    
-#t_label.grid(row = 12, column = 0)
 
 s = Scrollbar(root, orient = VERTICAL)
 s.grid(row = 12, column = 0,  padx=(280, 0), pady=(0, 25), sticky = "nsew") 
