@@ -137,19 +137,23 @@ def Sold_sender(Orderlist, link, email, password, sublink, search_button):
             driver.find_element(By.CLASS_NAME, 'ajax queue-restart' ).send_keys(Keys.ENTER)
          except NoSuchElementException:
             print ("No such element")
-                      
+            
+@cache                      
 def Link_temp_text(e):
    Link_entry.delete(0, "end")
-
+   
+@cache
 def Pack_temp_text(e):
    packs_entry.delete(0, "end")
-
+   
+@cache
 def clear():
    packs_entry.delete(0, END)
    packs_entry.insert(0, "Введи паки")
    Link_entry.delete(0, END)
    Link_entry.insert(0, "Введи ссылку")
-
+   
+@cache
 def get_korob():
    korob_entry = Toplevel()
    korob = tk.Entry(korob_entry, width= 45)
