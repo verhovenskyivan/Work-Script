@@ -48,9 +48,11 @@ def Pack_act(Packlist, link, email, password, sublink, search_button, act_button
             driver.find_element(By.CLASS_NAME, act_button).send_keys(Keys.ENTER)#Нажатие кнопки удаление
             driver.switch_to.alert.accept()#Свич на алерт и его принятие 
             t.insert(INSERT, Pack + actiontype + "\n")
+            time.sleep(0.5)
             driver.find_element(By.CLASS_NAME, "form-control").clear()
          except NoSuchElementException:#Обработка ошибки
             t.insert(INSERT, Pack + " Не"+ actiontype + "\n")
+            time.sleep(0.5)
             file_object = open('Паки.txt', 'a')
             file_object.write(Pack + "Не"+ actiontype + link[2])
             file_object.write("\n")
@@ -68,10 +70,13 @@ def Pack_Perenos(Packlist, link, email, password, sublink, search_button, act_bu
          try:
             driver.find_element(By.CLASS_NAME, act_button).send_keys(Keys.ENTER)#Нажатие кнопки удаление
             driver.switch_to.alert.accept()#Свич на алерт и его принятие 
-            t.insert(INSERT, Pack + actiontype + "\n") + time.sleep(0.5)
+            t.insert(INSERT, Pack + actiontype + "\n")
+            time.sleep(0.5)
+            t.update()
             driver.find_element(By.CLASS_NAME, "form-control").clear()
          except NoSuchElementException:#Обработка ошибки
             t.insert(INSERT, Pack + " Не"+ actiontype + "\n")
+            time.sleep(0.5)
             t.update()
             file_object = open('Паки.txt', 'a')
             file_object.write(Pack + "Не"+ actiontype + link[2])
@@ -155,11 +160,16 @@ def clear():
    
 @cache
 def get_korob():
-   korob_entry = Toplevel()
-   korob = tk.Entry(korob_entry, width= 45)
-   korob.insert(0, "Введи Короб:")
-   korob.grid()
-   korob_entry.focus_force()                
+   korob = Toplevel()
+   korob_entry = tk.Entry(korob, width= 45)
+   korob_entry.insert(0, "Введи Короб:")
+   korob_entry.pack()
+   korob.focus_force()
+   PKOb = tk.Button(korob, text = "Переместить в короб", bg = 'White', command = lambda: [Pack_Korob(
+   packs_entry.get(), Link_entry.get(), login_entry.get(), pass_entry.get(), korob_entry.get(),
+      '/tools/move_objects_to_rejectbox', '//*[@id="filterForm"]/button', "btn btn-default", " Перемещен в короб отказов"), clear()])
+   PKOb.pack()
+                   
 #Конец команд и фукнций
 
 #Начало интерфейса
@@ -210,9 +220,7 @@ DVB = tk.Button(text = "Переместить в зону ДВ", bg = 'White', 
       '/tools/move_pack_to_clearance_zone', "btn-default", "btn-default", " Перемещен в зону ДВ"), clear()])
 DVB.grid(row = 9, column = 0, padx = 10, pady = 5, sticky = "nsew")
 
-PKO = tk.Button(text = "Переместить паки в короб отказов", bg = 'White', command = lambda: [get_korob(), Pack_Korob(
-   packs_entry.get(), Link_entry.get(), login_entry.get(), pass_entry.get(),
-      '/tools/move_objects_to_rejectbox', '//*[@id="filterForm"]/button', "btn btn-default", " Перемещен в короб отказов"), clear()])
+PKO = tk.Button(text = "Переместить паки в короб отказов", bg = 'White', command = lambda: [get_korob()])
 PKO.grid(row = 10, column = 0, padx = 10, pady = 5, sticky = "nsew")
 
 Statusbtn = tk.Button(text = "Статус паков", bg = 'White', command = lambda: packstatus(
