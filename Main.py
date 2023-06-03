@@ -11,6 +11,7 @@ from tkinter.ttk import *
 from tkinter import *
 import tkinter as tk
 import  re, time
+import rapydscript
 
 s = Service('./workscript-main/chromedriver.exe')
 options = webdriver.ChromeOptions()
