@@ -37,6 +37,8 @@ def Pups(link, email, password, sublink):
       driver.find_element(By.NAME, "submit").send_keys(Keys.ENTER)#Авторизация
    except WebDriverException:
       t.insert(INSERT, "\n" + "page down" + "\n")
+      time.sleep(0.5)
+      t.update()
       
 @cache
 def Pack_act(Packlist, link, email, password, sublink, search_button, act_button, actiontype,):
@@ -101,10 +103,12 @@ def Pack_Korob(Packlist, link, email, password, korob, sublink, search_button, a
             driver.find_element(By.CLASS_NAME, act_button).send_keys(Keys.ENTER)#Нажатие кнопки удаление
             driver.switch_to.alert.accept()#Свич на алерт и его принятие 
             t.insert(INSERT, Pack + actiontype + "\n")
+            time.sleep(0.5)
             t.update()
             driver.find_element(By.CLASS_NAME, "form-control").clear()
          except NoSuchElementException:#Обработка ошибки
             t.insert(INSERT, Pack + " Не"+ actiontype + "\n")
+            time.sleep(0.5)
             t.update()
             file_object = open('Паки.txt', 'a')
             file_object.write(Pack + "Не"+ actiontype + link[2])
@@ -113,6 +117,27 @@ def Pack_Korob(Packlist, link, email, password, korob, sublink, search_button, a
             packstatus(Packlist, link, email, password, sublink)
             link_create(link, sublink)
             
+@cache   
+def Order_status(Orderlist, link, email, password, status_sublink):
+   Pups(link, email, password, status_sublink)
+   for Order in re.split('[";|,|:|\n|\\|/|//| "]', Orderlist):
+     if Pack != '':
+         try:
+            driver.find_element(By.CLASS_NAME, "filter-omnibox form-control").send_keys(Order)
+            driver.find_element(By.NAME, "submit0").send_keys(Keys.ENTER)
+            value = driver.find_element(By.XPATH, '//*[@id="all-packs-table"]/tbody/tr/td[4]').text
+            t.insert(INSERT,"\n" + Order + " имеет статус:" + "\n" + value)
+            time.sleep(0.5)
+            t.update()
+            quant = driver.find_element(By.XPATH, '//*[@id="all-packs-table"]/tbody/tr/td[5]').text
+            t.insert(INSERT, "\n" + Order  + " Кол-во товаров: " + quant + "\n" )
+            time.sleep(0.5)
+            t.update()
+            driver.find_element(By.ID, "input-search").clear()
+         except NoSuchElementException:#Обработка ошибки  
+             t.insert(INSERT, Order + ' Не существует' + "\n")
+             time.sleep(0.5)
+             t.update()
 @cache   
 def packstatus(Packlist, link, email, password, status_sublink):
    Pups(link, email, password, status_sublink)
@@ -132,7 +157,8 @@ def packstatus(Packlist, link, email, password, status_sublink):
             driver.find_element(By.ID, "input-search").clear()
          except NoSuchElementException:#Обработка ошибки  
              t.insert(INSERT, Pack + ' Не существует' + "\n")
-             t.update()
+             time.sleep(0.5)
+             t.update()             
              
 def Sold_sender(Orderlist, link, email, password, sublink, search_button):
    Pups(link, email, password, sublink)
@@ -220,7 +246,7 @@ NDB = tk.Button(text = "Пометить недопоставкой",  bg = 'Whi
       '/tools/mark_pack_missing', "submit0", "jq-mark-pack-missing-button", " помечен недопоставкой"), clear()])
 NDB.grid(row = 8, column = 0, padx = 10, pady = 5, sticky = "nsew")
 
-DVB = tk.Button(text = "Переместить в зону ДВ", bg = 'White', command = lambda: [Pack_act(
+DVB = tk.Button(text = "Переместить в зону ДВ", bg = 'White', command = lambda: [Pack_Perenos(
    packs_entry.get(), Link_entry.get(), login_entry.get(), pass_entry.get(), 
       '/tools/move_pack_to_clearance_zone', "btn-default", "btn-default", " Перемещен в зону ДВ"), clear()])
 DVB.grid(row = 9, column = 0, padx = 10, pady = 5, sticky = "nsew")
