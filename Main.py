@@ -11,13 +11,22 @@ from tkinter.ttk import *
 from tkinter import *
 import tkinter as tk
 import  re, time
-import rapydscript
+#from Cython.Build import cythonize
+#from setuptools import setup
+#import Main
+
+'''setup (
+   ext_modules= cythonize('Main.py')
+)'''
+
 
 s = Service('./workscript-main/chromedriver.exe')
+
 options = webdriver.ChromeOptions()
 options.add_experimental_option("detach", True)
 options.add_argument("--headless")
 options.add_argument = {'user-data-dir':'/Users/Application/Chrome/Default'}
+
 driver = webdriver.Chrome(options = options, service=Service(ChromeDriverManager().install()))
 
 @cache
@@ -39,6 +48,8 @@ def Pups(link, email, password, sublink):
       t.insert(INSERT, "\n" + "page down" + "\n")
       time.sleep(0.5)
       t.update()
+      t.focus_force()
+      t.see('end') 
       
 @cache
 def Pack_act(Packlist, link, email, password, sublink, search_button, act_button, actiontype,):
@@ -53,11 +64,15 @@ def Pack_act(Packlist, link, email, password, sublink, search_button, act_button
             t.insert(INSERT, Pack + actiontype + "\n")
             time.sleep(0.5)
             t.update()
+            t.focus_force()
+            t.see('end') 
             driver.find_element(By.CLASS_NAME, "form-control").clear()
          except NoSuchElementException:#Обработка ошибки
             t.insert(INSERT, Pack + " Не"+ actiontype + "\n")
             time.sleep(0.5)
             t.update()
+            t.focus_force()
+            t.see('end') 
             file_object = open('Паки.txt', 'a')
             file_object.write(Pack + "Не"+ actiontype + link[2])
             file_object.write("\n")
@@ -78,11 +93,15 @@ def Pack_Perenos(Packlist, link, email, password, sublink, search_button, act_bu
             t.insert(INSERT, Pack + actiontype + "\n")
             time.sleep(0.5)
             t.update()
+            t.focus_force()
+            t.see('end') 
             driver.find_element(By.CLASS_NAME, "form-control").clear()
          except NoSuchElementException:#Обработка ошибки
             t.insert(INSERT, Pack + " Не"+ actiontype + "\n")
             time.sleep(0.5)
             t.update()
+            t.focus_force()
+            t.see('end') 
             file_object = open('Паки.txt', 'a')
             file_object.write(Pack + "Не"+ actiontype + link[2])
             file_object.write("\n")
@@ -105,11 +124,15 @@ def Pack_Korob(Packlist, link, email, password, korob, sublink, search_button, a
             t.insert(INSERT, Pack + actiontype + "\n")
             time.sleep(0.5)
             t.update()
+            t.focus_force()
+            t.see('end') 
             driver.find_element(By.CLASS_NAME, "form-control").clear()
          except NoSuchElementException:#Обработка ошибки
             t.insert(INSERT, Pack + " Не"+ actiontype + "\n")
             time.sleep(0.5)
             t.update()
+            t.focus_force()
+            t.see('end') 
             file_object = open('Паки.txt', 'a')
             file_object.write(Pack + "Не"+ actiontype + link[2])
             file_object.write("\n")
@@ -117,7 +140,7 @@ def Pack_Korob(Packlist, link, email, password, korob, sublink, search_button, a
             packstatus(Packlist, link, email, password, sublink)
             link_create(link, sublink)
             
-@cache   
+@cache
 def Order_status(Orderlist, link, email, password, status_sublink):
    Pups(link, email, password, status_sublink)
    for Order in re.split('[";|,|:|\n|\\|/|//| "]', Orderlist):
@@ -133,12 +156,17 @@ def Order_status(Orderlist, link, email, password, status_sublink):
             t.insert(INSERT, "\n" + Order  + " Кол-во товаров: " + quant + "\n" )
             time.sleep(0.5)
             t.update()
+            t.focus_force()
+            t.see('end') 
             driver.find_element(By.ID, "input-search").clear()
          except NoSuchElementException:#Обработка ошибки  
-             t.insert(INSERT, Order + ' Не существует' + "\n")
-             time.sleep(0.5)
-             t.update()
-@cache   
+            t.insert(INSERT, Order + ' Не существует' + "\n")
+            time.sleep(0.5)
+            t.update()
+            t.focus_force()
+            t.see('end') 
+             
+@cache
 def packstatus(Packlist, link, email, password, status_sublink):
    Pups(link, email, password, status_sublink)
    for Pack in re.split('[";|,|:|\n|\\|/|//| "]', Packlist):
@@ -150,15 +178,21 @@ def packstatus(Packlist, link, email, password, status_sublink):
             t.insert(INSERT,"\n" + Pack + " имеет статус:" + "\n" + value)
             time.sleep(0.5)
             t.update()
+            t.focus_force()
+            t.see('end')
             quant = driver.find_element(By.XPATH, '//*[@id="list-table"]/tbody/tr[2]/td[8]').text
             t.insert(INSERT, "\n" + Pack  + " Кол-во товаров: " + quant + "\n" )
             time.sleep(0.5)
             t.update()
+            t.focus_force()
+            t.see('end')
             driver.find_element(By.ID, "input-search").clear()
          except NoSuchElementException:#Обработка ошибки  
-             t.insert(INSERT, Pack + ' Не существует' + "\n")
-             time.sleep(0.5)
-             t.update()             
+            t.insert(INSERT, Pack + ' Не существует' + "\n")
+            time.sleep(0.5)
+            t.update()     
+            t.focus_force()
+            t.see('end')        
              
 def Sold_sender(Orderlist, link, email, password, sublink, search_button):
    Pups(link, email, password, sublink)
@@ -260,8 +294,6 @@ Statusbtn = tk.Button(text = "Статус паков", bg = 'White', command = 
 Statusbtn.grid(row = 11, column = 0, padx = 10, pady = 5, sticky = "nsew")
 
 t = ScrolledText(root, height = 5, width = 35, wrap = WORD)
-t.yview("end")
-t.see("end")
 t.grid(row = 12, column = 0)
 
 s = Scrollbar(root, orient = VERTICAL)
