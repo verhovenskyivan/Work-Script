@@ -193,7 +193,7 @@ def packstatus(Packlist, link, email, password, status_sublink):
             t.update()     
             t.focus_force()
             t.see('end')        
-             
+        
 def Sold_sender(Orderlist, link, email, password, sublink, search_button):
    Pups(link, email, password, sublink)
    for Order in re.split('[";|,|:|\n|\\|/|//| "]',Orderlist): 
@@ -207,7 +207,23 @@ def Sold_sender(Orderlist, link, email, password, sublink, search_button):
             driver.find_element(By.CLASS_NAME, 'ajax queue-restart' ).send_keys(Keys.ENTER)
          except NoSuchElementException:
             print ("No such element")
-            
+
+@cache        
+def get_status():
+   text = tk.StringVar()
+   text.set('Введи Заказы/Паки:')
+   status = Toplevel()
+   get_entry = tk.Entry(status, width= 45, textvariable= text)
+   get_entry.grid(row = 1, column = 0, padx = (40, 10), pady = (30, 0))
+   get_entry.pack()
+   status_order_button = Button(status, text = 'Статус заказов', bg = 'White', command = lambda: [Order_status(get_entry.get(), Link_entry.get(), login_entry.get(), pass_entry.get(), get_entry.get(),
+      '//*[@id="all-packs-table"]/tbody/tr/td[4]'), clear()])
+   status_order_button.pack() 
+   status_pack_button = Button(status, text = "Статус паков", bg = 'White', command = lambda: packstatus(
+   get_entry.get(), Link_entry.get(), login_entry.get(), pass_entry.get(), 
+      '/containers/all/'))
+   status_pack_button.pack() 
+   
 @cache                      
 def Link_temp_text(e):
    Link_entry.delete(0, "end")
@@ -288,9 +304,7 @@ DVB.grid(row = 9, column = 0, padx = 10, pady = 5, sticky = "nsew")
 PKO = tk.Button(text = "Переместить паки в короб отказов", bg = 'White', command = lambda: [get_korob()])
 PKO.grid(row = 10, column = 0, padx = 10, pady = 5, sticky = "nsew")
 
-Statusbtn = tk.Button(text = "Статус паков", bg = 'White', command = lambda: packstatus(
-   packs_entry.get(), Link_entry.get(), login_entry.get(), pass_entry.get(), 
-      '/containers/all/'))
+Statusbtn = tk.Button(text = "Узнать Статус", bg = 'White', command = lambda: [get_status()])
 Statusbtn.grid(row = 11, column = 0, padx = 10, pady = 5, sticky = "nsew")
 
 t = ScrolledText(root, height = 5, width = 35, wrap = WORD)
