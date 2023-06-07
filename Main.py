@@ -219,9 +219,9 @@ def get_status():
    status_order_button = Button(status, text = 'Статус заказов', bg = 'White', command = lambda: [Order_status(get_entry.get(), Link_entry.get(), login_entry.get(), pass_entry.get(), get_entry.get(),
       '//*[@id="all-packs-table"]/tbody/tr/td[4]'), clear()])
    status_order_button.pack() 
-   status_pack_button = Button(status, text = "Статус паков", bg = 'White', command = lambda: packstatus(
+   status_pack_button = Button(status, text = "Статус паков", bg = 'White', command = lambda: [packstatus(
    get_entry.get(), Link_entry.get(), login_entry.get(), pass_entry.get(), 
-      '/containers/all/'))
+      '/containers/all/'), clear()]) 
    status_pack_button.pack() 
    
 @cache                      
