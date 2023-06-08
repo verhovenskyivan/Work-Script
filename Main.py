@@ -24,7 +24,7 @@ s = Service('./workscript-main/chromedriver.exe')
 
 options = webdriver.ChromeOptions()
 options.add_experimental_option("detach", True)
-options.add_argument("--headless")
+#options.add_argument("--headless")
 options.add_argument = {'user-data-dir':'/Users/Application/Chrome/Default'}
 
 driver = webdriver.Chrome(options = options, service=Service(ChromeDriverManager().install()))
@@ -174,14 +174,14 @@ def packstatus(Packlist, link, email, password, status_sublink):
          try:
             driver.find_element(By.ID, "input-search").send_keys(Pack)
             driver.find_element(By.NAME, "submit0").send_keys(Keys.ENTER)
-            value = driver.find_element(By.XPATH, '//*[@id="list-table"]/tbody/tr[2]/td[6]').text
-            t.insert(INSERT,"\n" + Pack + " имеет статус:" + "\n" + value)
+            value = driver.find_element(By.XPATH, '//*[@id="list-table"]/tbody/tr/td[6]').text
+            t.insert(INSERT,"\n" + Pack + " имеет статус:" + "\n" + value )
             time.sleep(0.5)
             t.update()
             t.focus_force()
             t.see('end')
-            quant = driver.find_element(By.XPATH, '//*[@id="list-table"]/tbody/tr[2]/td[8]').text
-            t.insert(INSERT, "\n" + Pack  + " Кол-во товаров: " + quant + "\n" )
+            quant = driver.find_element(By.XPATH, '//*[@id="list-table"]/tbody/tr/td[8]').text
+            t.insert(INSERT, "\n" + Pack  + " Кол-во позиций:" + ' ' + quant + "\n" )
             time.sleep(0.5)
             t.update()
             t.focus_force()
@@ -208,21 +208,19 @@ def Sold_sender(Orderlist, link, email, password, sublink, search_button):
          except NoSuchElementException:
             print ("No such element")
 
-@cache        
-def get_status():
-   text = tk.StringVar()
-   text.set('Введи Заказы/Паки:')
+       
+'''def get_status():
    status = Toplevel()
-   get_entry = tk.Entry(status, width= 45, textvariable= text)
+   get_entry = tk.Entry(status, width= 45)
    get_entry.grid(row = 1, column = 0, padx = (40, 10), pady = (30, 0))
    get_entry.pack()
-   status_order_button = Button(status, text = 'Статус заказов', bg = 'White', command = lambda: [Order_status(get_entry.get(), Link_entry.get(), login_entry.get(), pass_entry.get(), get_entry.get(),
+   status_order_button = Button(status, text = 'Статус заказов', bg = 'White', command = lambda: [Order_status(get_entry.get(), Link_entry.get(), login_entry.get(), pass_entry.get(),
       '//*[@id="all-packs-table"]/tbody/tr/td[4]'), clear()])
    status_order_button.pack() 
    status_pack_button = Button(status, text = "Статус паков", bg = 'White', command = lambda: [packstatus(
    get_entry.get(), Link_entry.get(), login_entry.get(), pass_entry.get(), 
       '/containers/all/'), clear()]) 
-   status_pack_button.pack() 
+   status_pack_button.pack()'''
    
 @cache                      
 def Link_temp_text(e):
@@ -304,7 +302,9 @@ DVB.grid(row = 9, column = 0, padx = 10, pady = 5, sticky = "nsew")
 PKO = tk.Button(text = "Переместить паки в короб отказов", bg = 'White', command = lambda: [get_korob()])
 PKO.grid(row = 10, column = 0, padx = 10, pady = 5, sticky = "nsew")
 
-Statusbtn = tk.Button(text = "Узнать Статус", bg = 'White', command = lambda: [get_status()])
+Statusbtn = tk.Button(text = "Статус Паков", bg = 'White', command = lambda: [packstatus(
+   packs_entry.get(), Link_entry.get(), login_entry.get(), pass_entry.get(), 
+      '/containers/all/'), clear()])
 Statusbtn.grid(row = 11, column = 0, padx = 10, pady = 5, sticky = "nsew")
 
 t = ScrolledText(root, height = 5, width = 35, wrap = WORD)
