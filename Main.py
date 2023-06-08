@@ -146,9 +146,9 @@ def Order_status(Orderlist, link, email, password, status_sublink):
    for Order in re.split('[";|,|:|\n|\\|/|//| "]', Orderlist):
      if Pack != '':
          try:
-            driver.find_element(By.CLASS_NAME, "filter-omnibox form-control").send_keys(Order)
+            driver.find_element(By.XPATH, '//*[@id="filterForm"]/div[2]/input').send_keys(Order)
             driver.find_element(By.NAME, "submit0").send_keys(Keys.ENTER)
-            value = driver.find_element(By.XPATH, '//*[@id="all-packs-table"]/tbody/tr/td[4]').text
+            value = driver.find_element(By.XPATH, '//*[@id="all-packs-table"]/tbody/tr/td[4]').text 
             t.insert(INSERT,"\n" + Order + " имеет статус:" + "\n" + value)
             time.sleep(0.5)
             t.update()
@@ -160,7 +160,7 @@ def Order_status(Orderlist, link, email, password, status_sublink):
             t.see('end') 
             driver.find_element(By.ID, "input-search").clear()
          except NoSuchElementException:#Обработка ошибки  
-            t.insert(INSERT, Order + ' Не существует' + "\n")
+            t.insert(INSERT,"\n" + Order + ' Не существует' + "\n")
             time.sleep(0.5)
             t.update()
             t.focus_force()
@@ -254,7 +254,7 @@ def get_korob():
 #Начало интерфейса
 root = tk.Tk()
 root.title("Pack Helper")
-root.geometry("300x450")
+root.geometry("300x480")
 root['background'] = 'White'
 
 first_frame = tk.Frame(root, bg = 'white', width = 200, height = 400)
@@ -281,7 +281,7 @@ Link_entry.bind("<FocusIn>", Link_temp_text)
 
 packs_entry = tk.Entry(root, width = 45) 
 packs_entry.grid(row = 3, column = 0, padx = (10, 10), pady = 5)
-packs_entry.insert(0, "Введи паки")
+packs_entry.insert(0, "Введи паки/заказы:")
 packs_entry.bind("<FocusIn>", Pack_temp_text)
 
 DB = tk.Button(text = "Удалить паки",  bg = 'White', command = lambda: [Pack_act(
@@ -302,15 +302,20 @@ DVB.grid(row = 9, column = 0, padx = 10, pady = 5, sticky = "nsew")
 PKO = tk.Button(text = "Переместить паки в короб отказов", bg = 'White', command = lambda: [get_korob()])
 PKO.grid(row = 10, column = 0, padx = 10, pady = 5, sticky = "nsew")
 
-Statusbtn = tk.Button(text = "Статус Паков", bg = 'White', command = lambda: [packstatus(
+StatusPack = tk.Button(text = "Статус Паков", bg = 'White', command = lambda: [packstatus(
    packs_entry.get(), Link_entry.get(), login_entry.get(), pass_entry.get(), 
       '/containers/all/'), clear()])
-Statusbtn.grid(row = 11, column = 0, padx = 10, pady = 5, sticky = "nsew")
+StatusPack.grid(row = 11, column = 0, padx = 10, pady = 5, sticky = "nsew")
 
-t = ScrolledText(root, height = 5, width = 35, wrap = WORD)
-t.grid(row = 12, column = 0)
+StatusOrders = tk.Button(text = "Статус Заказа", bg = 'White', command = lambda: [Order_status(
+   packs_entry.get(), Link_entry.get(), login_entry.get(), pass_entry.get(),
+     '/containers/packs'), clear()])
+StatusOrders.grid(row = 12, column = 0, padx = 10, pady = 5, sticky = "nsew")
+
+t = Text(root, height = 7, width = 35, wrap = WORD)
+t.grid(row = 13, column = 0)
 
 s = Scrollbar(root, orient = VERTICAL)
-s.grid(row = 12, column = 0,  padx=(280, 0), pady=(0, 25), sticky = "nsew") 
+s.grid(row = 13, column = 0,  padx=(280, 0),  sticky = "nsew") 
 
 root.mainloop()      
