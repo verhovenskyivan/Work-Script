@@ -143,25 +143,28 @@ def Pack_Korob(Packlist, link, email, password, korob, sublink, search_button, a
 @cache
 def Order_status(Orderlist, link, email, password, status_sublink):
    Pups(link, email, password, status_sublink)
-   for Order in re.split('[";|,|:|\n|\\|/|//| "]', Orderlist):
-     if Pack != '':
+   for Order in re.split('[";|,|:|\n|\\|/|//|  "]', Orderlist):
+     if Order != '':
          try:
-            driver.find_element(By.XPATH, '//*[@id="filterForm"]/div[2]/input').send_keys(Order)
+            driver.find_element(By.NAME, 'filterValue').send_keys(Order) 
             driver.find_element(By.NAME, "submit0").send_keys(Keys.ENTER)
-            value = driver.find_element(By.XPATH, '//*[@id="all-packs-table"]/tbody/tr/td[4]').text 
+            value = driver.find_element(By.XPATH, '//*[@id="order11213235Status"]').text 
             t.insert(INSERT,"\n" + Order + " имеет статус:" + "\n" + value)
-            time.sleep(0.5)
-            t.update()
-            quant = driver.find_element(By.XPATH, '//*[@id="all-packs-table"]/tbody/tr/td[5]').text
-            t.insert(INSERT, "\n" + Order  + " Кол-во товаров: " + quant + "\n" )
-            time.sleep(0.5)
+            time.sleep(1)
             t.update()
             t.focus_force()
-            t.see('end') 
-            driver.find_element(By.ID, "input-search").clear()
+            t.see('end')
+            '''quant = driver.find_element(By.XPATH, '//*[@id="layout-container-inner"]/table/tbody/tr/td[3]').text
+            t.insert(INSERT, "\n" + Order  + " Кол-во товаров: " + quant + "\n" )
+            time.sleep(1)
+            t.update()
+            t.focus_force()
+            t.see('end') '''
+            driver.find_element(By.NAME, 'filterValue').clear()
+            time.sleep(0.5)
          except NoSuchElementException:#Обработка ошибки  
             t.insert(INSERT,"\n" + Order + ' Не существует' + "\n")
-            time.sleep(0.5)
+            time.sleep(1)
             t.update()
             t.focus_force()
             t.see('end') 
@@ -309,7 +312,7 @@ StatusPack.grid(row = 11, column = 0, padx = 10, pady = 5, sticky = "nsew")
 
 StatusOrders = tk.Button(text = "Статус Заказа", bg = 'White', command = lambda: [Order_status(
    packs_entry.get(), Link_entry.get(), login_entry.get(), pass_entry.get(),
-     '/containers/packs'), clear()])
+     '/orders/index/'), clear()])
 StatusOrders.grid(row = 12, column = 0, padx = 10, pady = 5, sticky = "nsew")
 
 t = Text(root, height = 7, width = 35, wrap = WORD)
