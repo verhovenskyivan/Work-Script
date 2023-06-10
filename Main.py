@@ -11,6 +11,7 @@ from tkinter.ttk import *
 from tkinter import *
 import tkinter as tk
 import  re, time
+from winotify import Notification, audio
 #from Cython.Build import cythonize
 #from setuptools import setup
 #import Main
@@ -24,7 +25,7 @@ s = Service('./workscript-main/chromedriver.exe')
 
 options = webdriver.ChromeOptions()
 options.add_experimental_option("detach", True)
-#options.add_argument("--headless")
+options.add_argument("--headless")
 options.add_argument = {'user-data-dir':'/Users/Application/Chrome/Default'}
 
 driver = webdriver.Chrome(options = options, service=Service(ChromeDriverManager().install()))
@@ -79,6 +80,9 @@ def Pack_act(Packlist, link, email, password, sublink, search_button, act_button
             file_object.close() 
             packstatus(Packlist, link, email, password, sublink)
             link_create(link, sublink)
+         finally:
+            notify.show()
+            driver.close()
 
 @cache
 def Pack_Perenos(Packlist, link, email, password, sublink, search_button, act_button, actiontype,):
@@ -108,7 +112,10 @@ def Pack_Perenos(Packlist, link, email, password, sublink, search_button, act_bu
             file_object.close() 
             packstatus(Packlist, link, email, password, sublink)
             link_create(link, sublink)
-
+         finally:
+            notify.show()
+            driver.close()
+            
 @cache
 def Pack_Korob(Packlist, link, email, password, korob, sublink, search_button, act_button, actiontype):
     Pups(link, email, password, sublink)
@@ -154,12 +161,12 @@ def Order_status(Orderlist, link, email, password, status_sublink):
             t.update()
             t.focus_force()
             t.see('end')
-            '''quant = driver.find_element(By.XPATH, '//*[@id="layout-container-inner"]/table/tbody/tr/td[3]').text
+            quant = driver.find_element(By.XPATH, '//*[@id="layout-container-inner"]/table/tbody/tr/td[3]').text
             t.insert(INSERT, "\n" + Order  + " Кол-во товаров: " + quant + "\n" )
             time.sleep(1)
             t.update()
             t.focus_force()
-            t.see('end') '''
+            t.see('end')
             driver.find_element(By.NAME, 'filterValue').clear()
             time.sleep(0.5)
          except NoSuchElementException:#Обработка ошибки  
@@ -167,7 +174,9 @@ def Order_status(Orderlist, link, email, password, status_sublink):
             time.sleep(1)
             t.update()
             t.focus_force()
-            t.see('end') 
+            t.see('end')
+         finally:
+            driver.close() 
              
 @cache
 def packstatus(Packlist, link, email, password, status_sublink):
@@ -251,7 +260,12 @@ def get_korob():
    packs_entry.get(), Link_entry.get(), login_entry.get(), pass_entry.get(), korob_entry.get(),
       '/tools/move_objects_to_rejectbox', '//*[@id="filterForm"]/button', "btn btn-default", " Перемещен в короб отказов"), clear()])
    PKOb.pack()
-                   
+                  
+notify = Notification(app_id='Main.py',
+                      title='Pack Helper',
+                      msg='Процесс завершен',
+                      duration='long',
+                      icon='./workscript-main/icon.png')                   
 #Конец команд и фукнций
 
 #Начало интерфейса
