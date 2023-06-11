@@ -51,7 +51,25 @@ def Pups(link, email, password, sublink):
       t.update()
       t.focus_force()
       t.see('end')
-   
+
+def Mobile_perenos(Packlist, link, email, password, sublink, search_button, act_button, actiontype,):
+   Pups(link, email, password, sublink)
+   for Pack in re.split('[";|,|:|\n|\\|/|//| "]',Packlist): 
+      if Pack != '':
+         try: 
+            driver.find_element(By.CLASS_NAME, 'full-width-button  green').send_keys(Keys.ENTER)
+            driver.find_element(By.NAME, 'barcode').send_keys('CZ01')
+            driver.find_element(By.CLASS_NAME, 'btn btn-info btn-large').send_keys(Keys.ENTER)
+            driver.find_element(By.NAME, 'barcode').send_keys(Pack)
+            t.insert(INSERT, Pack + actiontype + "\n")
+            time.sleep(0.5)
+            t.update()
+            t.focus_force()
+            t.see('end') 
+            driver.find_element(By.NAME, 'barcode').clear()
+         except NoSuchElementException:
+            packstatus(Packlist, link, email, password, sublink)
+            link_create(link, sublink)
       
       
 @cache
