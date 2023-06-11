@@ -50,7 +50,9 @@ def Pups(link, email, password, sublink):
       time.sleep(0.5)
       t.update()
       t.focus_force()
-      t.see('end') 
+      t.see('end')
+   
+      
       
 @cache
 def Pack_act(Packlist, link, email, password, sublink, search_button, act_button, actiontype,):
@@ -82,7 +84,7 @@ def Pack_act(Packlist, link, email, password, sublink, search_button, act_button
             link_create(link, sublink)
          finally:
             notify.show()
-            driver.close()
+        
 
 @cache
 def Pack_Perenos(Packlist, link, email, password, sublink, search_button, act_button, actiontype,):
@@ -114,7 +116,7 @@ def Pack_Perenos(Packlist, link, email, password, sublink, search_button, act_bu
             link_create(link, sublink)
          finally:
             notify.show()
-            driver.close()
+         
             
 @cache
 def Pack_Korob(Packlist, link, email, password, korob, sublink, search_button, act_button, actiontype):
@@ -146,7 +148,10 @@ def Pack_Korob(Packlist, link, email, password, korob, sublink, search_button, a
             file_object.close()
             packstatus(Packlist, link, email, password, sublink)
             link_create(link, sublink)
-            
+         finally:
+            notify.show()
+         
+               
 @cache
 def Order_status(Orderlist, link, email, password, status_sublink):
    Pups(link, email, password, status_sublink)
@@ -176,8 +181,8 @@ def Order_status(Orderlist, link, email, password, status_sublink):
             t.focus_force()
             t.see('end')
          finally:
-            driver.close() 
-             
+            notify.show()
+         
 @cache
 def packstatus(Packlist, link, email, password, status_sublink):
    Pups(link, email, password, status_sublink)
@@ -205,7 +210,10 @@ def packstatus(Packlist, link, email, password, status_sublink):
             t.update()     
             t.focus_force()
             t.see('end')        
-        
+         finally:
+            notify.show()
+         
+            
 def Sold_sender(Orderlist, link, email, password, sublink, search_button):
    Pups(link, email, password, sublink)
    for Order in re.split('[";|,|:|\n|\\|/|//| "]',Orderlist): 
