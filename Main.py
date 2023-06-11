@@ -20,7 +20,6 @@ from winotify import Notification, audio
    ext_modules= cythonize('Main.py')
 )'''
 
-
 s = Service('./workscript-main/chromedriver.exe')
 
 options = webdriver.ChromeOptions()
@@ -52,7 +51,8 @@ def Pups(link, email, password, sublink):
       t.focus_force()
       t.see('end')
 
-def Mobile_perenos(Packlist, link, email, password, sublink, search_button, act_button, actiontype,):
+@cache
+def Mobile_perenos(Packlist, link, email, password, sublink, actiontype,):
    Pups(link, email, password, sublink)
    for Pack in re.split('[";|,|:|\n|\\|/|//| "]',Packlist): 
       if Pack != '':
@@ -209,13 +209,15 @@ def packstatus(Packlist, link, email, password, status_sublink):
          try:
             driver.find_element(By.ID, "input-search").send_keys(Pack)
             driver.find_element(By.NAME, "submit0").send_keys(Keys.ENTER)
-            value = driver.find_element(By.XPATH, '//*[@id="list-table"]/tbody/tr/td[6]').text
+            value = driver.find_element(By.CLASS_NAME, "cell-status").text
+            #driver.find_element(By.XPATH, '//*[@id="list-table"]/tbody/tr/td[6]').text
             t.insert(INSERT,"\n" + Pack + " имеет статус:" + "\n" + value )
             time.sleep(0.5)
             t.update()
             t.focus_force()
             t.see('end')
-            quant = driver.find_element(By.XPATH, '//*[@id="list-table"]/tbody/tr/td[8]').text
+            quant = driver.find_element(By.CLASS_NAME, 'cell-itemQuantity').text
+            #driver.find_element(By.XPATH, '//*[@id="list-table"]/tbody/tr/td[8]').text
             t.insert(INSERT, "\n" + Pack  + " Кол-во позиций:" + ' ' + quant + "\n" )
             time.sleep(0.5)
             t.update()
