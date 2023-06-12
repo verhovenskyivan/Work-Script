@@ -168,6 +168,7 @@ def Pack_Korob(Packlist, link, email, password, korob, sublink, search_button, a
             link_create(link, sublink)
          finally:
             notify.show()
+            t.delete('1.0', END)
          
                
 @cache
@@ -200,7 +201,7 @@ def Order_status(Orderlist, link, email, password, status_sublink):
             t.see('end')
          finally:
             notify.show()
-         
+            t.delete('1.0', END)
 @cache
 def packstatus(Packlist, link, email, password, status_sublink):
    Pups(link, email, password, status_sublink)
@@ -232,6 +233,7 @@ def packstatus(Packlist, link, email, password, status_sublink):
             t.see('end')        
          finally:
             notify.show()
+            t.delete('1.0', END)
          
             
 def Sold_sender(Orderlist, link, email, password, sublink, search_button):
