@@ -202,6 +202,7 @@ def Order_status(Orderlist, link, email, password, status_sublink):
          finally:
             notify.show()
             t.delete('1.0', END)
+            packs_entry.delete()
 @cache
 def packstatus(Packlist, link, email, password, status_sublink):
    Pups(link, email, password, status_sublink)
@@ -234,6 +235,7 @@ def packstatus(Packlist, link, email, password, status_sublink):
          finally:
             notify.show()
             t.delete('1.0', END)
+            packs_entry.delete()
          
             
 def Sold_sender(Orderlist, link, email, password, sublink, search_button):
