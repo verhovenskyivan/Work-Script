@@ -1,4 +1,5 @@
 from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoAlertPresentException
 from selenium.common.exceptions import WebDriverException
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
@@ -50,27 +51,7 @@ def Pups(link, email, password, sublink):
       t.update()
       t.focus_force()
       t.see('end')
-
-@cache
-def Mobile_perenos(Packlist, link, email, password, sublink, actiontype,):
-   Pups(link, email, password, sublink)
-   for Pack in re.split('[";|,|:|\n|\\|/|//| "]',Packlist): 
-      if Pack != '':
-         try: 
-            driver.find_element(By.CLASS_NAME, 'full-width-button  green').send_keys(Keys.ENTER)
-            driver.find_element(By.NAME, 'barcode').send_keys('CZ01')
-            driver.find_element(By.CLASS_NAME, 'btn btn-info btn-large').send_keys(Keys.ENTER)
-            driver.find_element(By.NAME, 'barcode').send_keys(Pack)
-            t.insert(INSERT, Pack + actiontype + "\n")
-            time.sleep(0.5)
-            t.update()
-            t.focus_force()
-            t.see('end') 
-            driver.find_element(By.NAME, 'barcode').clear()
-         except NoSuchElementException:
-            packstatus(Packlist, link, email, password, sublink)
-            link_create(link, sublink)
-      
+    
       
 @cache
 def Pack_act(Packlist, link, email, password, sublink, search_button, act_button, actiontype,):
@@ -100,8 +81,6 @@ def Pack_act(Packlist, link, email, password, sublink, search_button, act_button
             file_object.close() 
             packstatus(Packlist, link, email, password, sublink)
             link_create(link, sublink)
-         finally:
-            notify.show()
         
 
 @cache
@@ -120,7 +99,8 @@ def Pack_Perenos(Packlist, link, email, password, sublink, search_button, act_bu
             t.focus_force()
             t.see('end') 
             driver.find_element(By.CLASS_NAME, "form-control").clear()
-         except NoSuchElementException:#Обработка ошибки
+         except NoSuchElementException or NoAlertPresentException:#Обработка ошибки
+            driver.find_element(By.CLASS_NAME, "form-control").clear()
             t.insert(INSERT, Pack + " Не"+ actiontype + "\n")
             time.sleep(0.5)
             t.update()
@@ -132,8 +112,7 @@ def Pack_Perenos(Packlist, link, email, password, sublink, search_button, act_bu
             file_object.close() 
             packstatus(Packlist, link, email, password, sublink)
             link_create(link, sublink)
-         finally:
-            notify.show()
+         
          
             
 @cache
@@ -203,6 +182,7 @@ def Order_status(Orderlist, link, email, password, status_sublink):
             notify.show()
             t.delete('1.0', END)
             packs_entry.delete()
+            
 @cache
 def packstatus(Packlist, link, email, password, status_sublink):
    Pups(link, email, password, status_sublink)
@@ -232,10 +212,6 @@ def packstatus(Packlist, link, email, password, status_sublink):
             t.update()     
             t.focus_force()
             t.see('end')        
-         finally:
-            notify.show()
-            t.delete('1.0', END)
-            packs_entry.delete()
          
             
 def Sold_sender(Orderlist, link, email, password, sublink, search_button):
@@ -358,7 +334,7 @@ StatusPack.grid(row = 11, column = 0, padx = 10, pady = 5, sticky = "nsew")
 
 StatusOrders = tk.Button(text = "Статус Заказа", bg = 'White', command = lambda: [Order_status(
    packs_entry.get(), Link_entry.get(), login_entry.get(), pass_entry.get(),
-     '/orders/index/'), clear()])
+     '/orders/index/'), clear()])  
 StatusOrders.grid(row = 12, column = 0, padx = 10, pady = 5, sticky = "nsew")
 
 t = Text(root, height = 7, width = 35, wrap = WORD)
