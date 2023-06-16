@@ -13,13 +13,7 @@ from tkinter import *
 import tkinter as tk
 import  re, time
 from winotify import Notification, audio
-#from Cython.Build import cythonize
-#from setuptools import setup
-#import Main
 
-'''setup (
-   ext_modules= cythonize('Main.py')
-)'''
 
 s = Service('./workscript-main/chromedriver.exe')
 
@@ -50,9 +44,43 @@ def Pups(link, email, password, sublink):
       time.sleep(0.5)
       t.update()
       t.focus_force()
-      t.see('end')
-    
-      
+      t.see('end')     
+ 
+@cache       
+def output(Object, actiontype): 
+   t.insert(INSERT, ' ' + Object + actiontype + "\n") 
+   time.sleep(0.5) 
+   t.update() 
+   t.focus_force() 
+   t.see('end')    
+   
+@cache 
+def writer(Object, actiontype, link):
+   file_object = open('Паки.txt', 'a')
+   file_object.write(Object + "Не"+ actiontype + link[2])
+   file_object.write("\n")
+   file_object.close() 
+
+@cache 
+def Driver_action(Object_List, link, email, password, sublink, search_button_insert, 
+                  search_button_press, act_button, actiontype):
+   Pups(link, email, password, sublink)
+   for Object in re.split('[";|,|:|\n|\\|/|//| "]',Object_List): 
+      if Object != '': 
+         driver.find_element(By.CLASS_NAME, search_button_insert).send_keys(Object)#Ввод в графу поиска
+         driver.find_element(By.NAME, search_button_press).send_keys(Keys.ENTER)  
+         try:
+            driver.find_element(By.CLASS_NAME, act_button).send_keys(Keys.ENTER)#Нажатие кнопки удаление
+            driver.switch_to.alert.accept()#Свич на алерт и его принятие 
+            output(Object, actiontype)
+         except NoSuchElementException or NoAlertPresentException:
+            writer(Object, actiontype, link)
+            output(Object, actiontype)
+def Pack_Action():
+   Driver_action()
+   
+   
+                         
 @cache
 def Pack_act(Packlist, link, email, password, sublink, search_button, act_button, actiontype,):
    Pups(link, email, password, sublink)
@@ -158,30 +186,14 @@ def Order_status(Orderlist, link, email, password, status_sublink):
          try:
             driver.find_element(By.NAME, 'filterValue').send_keys(Order) 
             driver.find_element(By.NAME, "submit0").send_keys(Keys.ENTER)
-            value = driver.find_element(By.XPATH, '//*[@id="order11213235Status"]').text 
-            t.insert(INSERT,"\n" + Order + " имеет статус:" + "\n" + value)
-            time.sleep(1)
-            t.update()
-            t.focus_force()
-            t.see('end')
+            value = driver.find_element(By.XPATH, '//*[@id="order11213235Status"]').text
             quant = driver.find_element(By.XPATH, '//*[@id="layout-container-inner"]/table/tbody/tr/td[3]').text
-            t.insert(INSERT, "\n" + Order  + " Кол-во товаров: " + quant + "\n" )
-            time.sleep(1)
-            t.update()
-            t.focus_force()
-            t.see('end')
-            driver.find_element(By.NAME, 'filterValue').clear()
-            time.sleep(0.5)
-         except NoSuchElementException:#Обработка ошибки  
-            t.insert(INSERT,"\n" + Order + ' Не существует' + "\n")
-            time.sleep(1)
-            t.update()
-            t.focus_force()
-            t.see('end')
-         finally:
-            notify.show()
-            t.delete('1.0', END)
-            packs_entry.delete()
+            info = (" имеет статус: "  + value + " Кол-во товаров: " + quant + "\n")
+            output(Order, info)
+         except NoSuchElementException:#Обработка ошибки 
+            info =  (' Не существует' + "\n")
+            output(Order, info)
+         driver.find_element(By.NAME, 'filterValue').clear()
             
 @cache
 def packstatus(Packlist, link, email, password, status_sublink):
