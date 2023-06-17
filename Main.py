@@ -14,7 +14,6 @@ import tkinter as tk
 import  re, time
 from winotify import Notification, audio
 
-
 s = Service('./workscript-main/chromedriver.exe')
 
 options = webdriver.ChromeOptions()
@@ -36,9 +35,9 @@ def link_create(linkd, sublink):
 def Pups(link, email, password, sublink):
    try:
       link_create(link, sublink)
-      driver.find_element(By.ID, 'identity').send_keys(email)#Ввод логина
-      driver.find_element(By.ID, 'credential').send_keys(password)#Ввод пароля
-      driver.find_element(By.NAME, "submit").send_keys(Keys.ENTER)#Авторизация
+      driver.find_element(By.ID, 'identity').send_keys(email)
+      driver.find_element(By.ID, 'credential').send_keys(password)
+      driver.find_element(By.NAME, "submit").send_keys(Keys.ENTER)
    except WebDriverException:
       t.insert(INSERT, "\n" + "page down" + "\n")
       time.sleep(0.5)
@@ -70,17 +69,40 @@ def Driver_action(Object_List, link, email, password, sublink, search_button_ins
          driver.find_element(By.CLASS_NAME, search_button_insert).send_keys(Object)#Ввод в графу поиска
          driver.find_element(By.NAME, search_button_press).send_keys(Keys.ENTER)  
          try:
-            driver.find_element(By.CLASS_NAME, act_button).send_keys(Keys.ENTER)#Нажатие кнопки удаление
-            driver.switch_to.alert.accept()#Свич на алерт и его принятие 
-            output(Object, actiontype)
+            if DB or NDB or DVB:
+               driver.find_element(By.CLASS_NAME, act_button).send_keys(Keys.ENTER)#Нажатие кнопки удаление
+               driver.switch_to.alert.accept()#Свич на алерт и его принятие 
+               output(Object, actiontype)
+               driver.find_element(By.CLASS_NAME, "form-control").clear()
+            elif PKO:
+               driver.find_element(By.CLASS_NAME, act_button).send_keys(Keys.ENTER)#Нажатие кнопки удаление
+               driver.switch_to.alert.accept()#Свич на алерт и его принятие 
+               t.insert(INSERT, Object + actiontype + "\n")
+               output(Object, actiontype)
+               driver.find_element(By.CLASS_NAME, "form-control").clear()
+            elif StatusOrders or StatusPack:
+               driver.find_element(By.ID, "input-search").send_keys(Object)
+               driver.find_element(By.NAME, "submit0").send_keys(Keys.ENTER)
+               value = driver.find_element(By.CLASS_NAME, "cell-status").text
+               #driver.find_element(By.XPATH, '//*[@id="list-table"]/tbody/tr/td[6]').text
+               output(Object) + t.insert(INSERT,"\n" + Object + " имеет статус:" + "\n" + value )
+               quant = driver.find_element(By.CLASS_NAME, 'cell-itemQuantity').text
+               #driver.find_element(By.XPATH, '//*[@id="list-table"]/tbody/tr/td[8]').text
+               output(Object) + t.insert(INSERT, "\n" + Object  + " Кол-во позиций:" + ' ' + quant + "\n" )
          except NoSuchElementException or NoAlertPresentException:
             writer(Object, actiontype, link)
             output(Object, actiontype)
+
+def get_object(object):
+   packs_entry.get = object
+ 
+def get_user(email, password):
+   login_entry.get = email
+   pass_entry.get = password     
+            
 def Pack_Action():
-   Driver_action()
-   
-   
-                         
+   Driver_action(get_object, Pups, get_user, )
+                            
 @cache
 def Pack_act(Packlist, link, email, password, sublink, search_button, act_button, actiontype,):
    Pups(link, email, password, sublink)
@@ -90,23 +112,14 @@ def Pack_act(Packlist, link, email, password, sublink, search_button, act_button
          driver.find_element(By.NAME, search_button).send_keys(Keys.ENTER)#Нажатие кнопки поиск
          try:
             driver.find_element(By.CLASS_NAME, act_button).send_keys(Keys.ENTER)#Нажатие кнопки удаление
-            driver.switch_to.alert.accept()#Свич на алерт и его принятие 
+            driver.switch_to.alert.accept()
             t.insert(INSERT, Pack + actiontype + "\n")
-            time.sleep(0.5)
-            t.update()
-            t.focus_force()
-            t.see('end') 
+            output(Pack, actiontype)
             driver.find_element(By.CLASS_NAME, "form-control").clear()
-         except NoSuchElementException:#Обработка ошибки
+         except NoSuchElementException:
             t.insert(INSERT, Pack + " Не"+ actiontype + "\n")
-            time.sleep(0.5)
-            t.update()
-            t.focus_force()
-            t.see('end') 
-            file_object = open('Паки.txt', 'a')
-            file_object.write(Pack + "Не"+ actiontype + link[2])
-            file_object.write("\n")
-            file_object.close() 
+            output(Pack, actiontype)
+            writer(Pack,actiontype, link) 
             packstatus(Packlist, link, email, password, sublink)
             link_create(link, sublink)
         
@@ -116,33 +129,22 @@ def Pack_Perenos(Packlist, link, email, password, sublink, search_button, act_bu
     Pups(link, email, password, sublink)
     for Pack in re.split('[";|,|:|\n|\\|/|//| "]',Packlist): 
       if Pack != '': 
-         driver.find_element(By.CLASS_NAME, "form-control").send_keys(Pack)#Ввод в графу поиска
-         driver.find_element(By.CLASS_NAME, search_button).send_keys(Keys.ENTER)#Нажатие кнопки поиск
+         driver.find_element(By.CLASS_NAME, "form-control").send_keys(Pack)
+         driver.find_element(By.CLASS_NAME, search_button).send_keys(Keys.ENTER)
          try:
-            driver.find_element(By.CLASS_NAME, act_button).send_keys(Keys.ENTER)#Нажатие кнопки удаление
-            driver.switch_to.alert.accept()#Свич на алерт и его принятие 
+            driver.find_element(By.CLASS_NAME, act_button).send_keys(Keys.ENTER)
+            driver.switch_to.alert.accept()
             t.insert(INSERT, Pack + actiontype + "\n")
-            time.sleep(0.5)
-            t.update()
-            t.focus_force()
-            t.see('end') 
+            output(Pack, actiontype)
             driver.find_element(By.CLASS_NAME, "form-control").clear()
-         except NoSuchElementException or NoAlertPresentException:#Обработка ошибки
+         except NoSuchElementException or NoAlertPresentException:
             driver.find_element(By.CLASS_NAME, "form-control").clear()
             t.insert(INSERT, Pack + " Не"+ actiontype + "\n")
-            time.sleep(0.5)
-            t.update()
-            t.focus_force()
-            t.see('end') 
-            file_object = open('Паки.txt', 'a')
-            file_object.write(Pack + "Не"+ actiontype + link[2])
-            file_object.write("\n")
-            file_object.close() 
+            output(Pack, actiontype)
+            writer(Pack, actiontype, link)
             packstatus(Packlist, link, email, password, sublink)
             link_create(link, sublink)
-         
-         
-            
+                  
 @cache
 def Pack_Korob(Packlist, link, email, password, korob, sublink, search_button, act_button, actiontype):
     Pups(link, email, password, sublink)
@@ -155,28 +157,13 @@ def Pack_Korob(Packlist, link, email, password, korob, sublink, search_button, a
             driver.find_element(By.XPATH, '//*[@id="layout-container-inner"]/div/form/div/input[3]').send_keys(korob)
             driver.find_element(By.CLASS_NAME, act_button).send_keys(Keys.ENTER)#Нажатие кнопки удаление
             driver.switch_to.alert.accept()#Свич на алерт и его принятие 
-            t.insert(INSERT, Pack + actiontype + "\n")
-            time.sleep(0.5)
-            t.update()
-            t.focus_force()
-            t.see('end') 
+            output(Pack, actiontype)
             driver.find_element(By.CLASS_NAME, "form-control").clear()
          except NoSuchElementException:#Обработка ошибки
-            t.insert(INSERT, Pack + " Не"+ actiontype + "\n")
-            time.sleep(0.5)
-            t.update()
-            t.focus_force()
-            t.see('end') 
-            file_object = open('Паки.txt', 'a')
-            file_object.write(Pack + "Не"+ actiontype + link[2])
-            file_object.write("\n")
-            file_object.close()
+            output(Pack, actiontype)
+            writer(Pack, actiontype, link)
             packstatus(Packlist, link, email, password, sublink)
             link_create(link, sublink)
-         finally:
-            notify.show()
-            t.delete('1.0', END)
-         
                
 @cache
 def Order_status(Orderlist, link, email, password, status_sublink):
@@ -205,25 +192,14 @@ def packstatus(Packlist, link, email, password, status_sublink):
             driver.find_element(By.NAME, "submit0").send_keys(Keys.ENTER)
             value = driver.find_element(By.CLASS_NAME, "cell-status").text
             #driver.find_element(By.XPATH, '//*[@id="list-table"]/tbody/tr/td[6]').text
-            t.insert(INSERT,"\n" + Pack + " имеет статус:" + "\n" + value )
-            time.sleep(0.5)
-            t.update()
-            t.focus_force()
-            t.see('end')
+            output(Pack) + t.insert(INSERT,"\n" + Pack + " имеет статус:" + "\n" + value )
             quant = driver.find_element(By.CLASS_NAME, 'cell-itemQuantity').text
             #driver.find_element(By.XPATH, '//*[@id="list-table"]/tbody/tr/td[8]').text
-            t.insert(INSERT, "\n" + Pack  + " Кол-во позиций:" + ' ' + quant + "\n" )
-            time.sleep(0.5)
-            t.update()
-            t.focus_force()
-            t.see('end')
+            output(Pack) + t.insert(INSERT, "\n" + Pack  + " Кол-во позиций:" + ' ' + quant + "\n" )
             driver.find_element(By.ID, "input-search").clear()
          except NoSuchElementException:#Обработка ошибки  
-            t.insert(INSERT, Pack + ' Не существует' + "\n")
-            time.sleep(0.5)
-            t.update()     
-            t.focus_force()
-            t.see('end')        
+           output(Pack)
+           writer(Pack, link)      
          
             
 def Sold_sender(Orderlist, link, email, password, sublink, search_button):
