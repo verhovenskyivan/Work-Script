@@ -113,7 +113,6 @@ def Pack_act(Packlist, link, email, password, sublink, search_button, act_button
          try:
             driver.find_element(By.CLASS_NAME, act_button).send_keys(Keys.ENTER)#Нажатие кнопки удаление
             driver.switch_to.alert.accept()
-            t.insert(INSERT, Pack + actiontype + "\n")
             output(Pack, actiontype)
             driver.find_element(By.CLASS_NAME, "form-control").clear()
          except NoSuchElementException:
@@ -134,7 +133,6 @@ def Pack_Perenos(Packlist, link, email, password, sublink, search_button, act_bu
          try:
             driver.find_element(By.CLASS_NAME, act_button).send_keys(Keys.ENTER)
             driver.switch_to.alert.accept()
-            t.insert(INSERT, Pack + actiontype + "\n")
             output(Pack, actiontype)
             driver.find_element(By.CLASS_NAME, "form-control").clear()
          except NoSuchElementException or NoAlertPresentException:
