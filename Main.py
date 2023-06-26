@@ -199,7 +199,7 @@ def packstatus(Packlist, link, email, password, status_sublink):
            output(Pack)
            writer(Pack, link)      
          
-            
+@cache           
 def Sold_sender(Orderlist, link, email, password, sublink, search_button):
    Pups(link, email, password, sublink)
    for Order in re.split('[";|,|:|\n|\\|/|//| "]',Orderlist): 
