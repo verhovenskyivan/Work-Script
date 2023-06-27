@@ -116,12 +116,13 @@ def Pack_act(Packlist, link, email, password, sublink, search_button, act_button
             output(Pack, actiontype)
             driver.find_element(By.CLASS_NAME, "form-control").clear()
          except NoSuchElementException:
+            driver.find_element(By.CLASS_NAME, "form-control").clear()
             t.insert(INSERT, Pack + " Не"+ actiontype + "\n")
             output(Pack, actiontype)
-            writer(Pack,actiontype, link) 
+            #writer(Pack,actiontype, link) 
             packstatus(Packlist, link, email, password, sublink)
             link_create(link, sublink)
-        
+         driver.find_element(By.CLASS_NAME, "form-control").clear()
 
 @cache
 def Pack_Perenos(Packlist, link, email, password, sublink, search_button, act_button, actiontype,):
@@ -139,7 +140,7 @@ def Pack_Perenos(Packlist, link, email, password, sublink, search_button, act_bu
             driver.find_element(By.CLASS_NAME, "form-control").clear()
             t.insert(INSERT, Pack + " Не"+ actiontype + "\n")
             output(Pack, actiontype)
-            writer(Pack, actiontype, link)
+            #writer(Pack, actiontype, link)
             packstatus(Packlist, link, email, password, sublink)
             link_create(link, sublink)
                   
@@ -159,7 +160,7 @@ def Pack_Korob(Packlist, link, email, password, korob, sublink, search_button, a
             driver.find_element(By.CLASS_NAME, "form-control").clear()
          except NoSuchElementException:#Обработка ошибки
             output(Pack, actiontype)
-            writer(Pack, actiontype, link)
+            #writer(Pack, actiontype, link)
             packstatus(Packlist, link, email, password, sublink)
             link_create(link, sublink)
                
@@ -176,8 +177,7 @@ def Order_status(Orderlist, link, email, password, status_sublink):
             info = (" имеет статус: "  + value + " Кол-во товаров: " + quant + "\n")
             output(Order, info)
          except NoSuchElementException:#Обработка ошибки 
-            info =  (' Не существует' + "\n")
-            output(Order, info)
+            output(Order, 'Не существует' + "\n")
          driver.find_element(By.NAME, 'filterValue').clear()
             
 @cache
@@ -197,9 +197,9 @@ def packstatus(Packlist, link, email, password, status_sublink):
             driver.find_element(By.ID, "input-search").clear()
          except NoSuchElementException:#Обработка ошибки  
            output(Pack)
-           writer(Pack, link)      
+           #writer(Pack, link)      
          
-@cache           
+            
 def Sold_sender(Orderlist, link, email, password, sublink, search_button):
    Pups(link, email, password, sublink)
    for Order in re.split('[";|,|:|\n|\\|/|//| "]',Orderlist): 
