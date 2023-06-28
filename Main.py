@@ -5,16 +5,19 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
+from win32process import CREATE_NO_WINDOW
 from tkinter.scrolledtext import *
+from wintoast import ToastNotifier
 from selenium import webdriver
 from functools import cache
 from tkinter.ttk import *
 from tkinter import *
 import tkinter as tk
 import  re, time
-from winotify import Notification, audio
+
 
 s = Service('./workscript-main/chromedriver.exe')
+s.creation_flags  = CREATE_NO_WINDOW
 
 options = webdriver.ChromeOptions()
 options.add_experimental_option("detach", True)
@@ -22,6 +25,7 @@ options.add_argument("--headless")
 options.add_argument = {'user-data-dir':'/Users/Application/Chrome/Default'}
 
 driver = webdriver.Chrome(options = options, service=Service(ChromeDriverManager().install()))
+
 
 @cache
 def link_create(linkd, sublink):
@@ -122,7 +126,7 @@ def Pack_act(Packlist, link, email, password, sublink, search_button, act_button
             #writer(Pack,actiontype, link) 
             packstatus(Packlist, link, email, password, sublink)
             link_create(link, sublink)
-         driver.find_element(By.CLASS_NAME, "form-control").clear()
+         show_notify()
 
 @cache
 def Pack_Perenos(Packlist, link, email, password, sublink, search_button, act_button, actiontype,):
@@ -196,7 +200,7 @@ def packstatus(Packlist, link, email, password, status_sublink):
             output(Pack) + t.insert(INSERT, "\n" + Pack  + " Кол-во позиций:" + ' ' + quant + "\n" )
             driver.find_element(By.ID, "input-search").clear()
          except NoSuchElementException:#Обработка ошибки  
-           output(Pack)
+           output(Pack, actiontype = 'Не найден')
            #writer(Pack, link)      
          
             
@@ -220,10 +224,10 @@ def Sold_sender(Orderlist, link, email, password, sublink, search_button):
    get_entry = tk.Entry(status, width= 45)
    get_entry.grid(row = 1, column = 0, padx = (40, 10), pady = (30, 0))
    get_entry.pack()
-   status_order_button = Button(status, text = 'Статус заказов', bg = 'White', command = lambda: [Order_status(get_entry.get(), Link_entry.get(), login_entry.get(), pass_entry.get(),
+   status_order_button = Button(status, text = 'Статус заказов', bg = 'white', command = lambda: [Order_status(get_entry.get(), Link_entry.get(), login_entry.get(), pass_entry.get(),
       '//*[@id="all-packs-table"]/tbody/tr/td[4]'), clear()])
    status_order_button.pack() 
-   status_pack_button = Button(status, text = "Статус паков", bg = 'White', command = lambda: [packstatus(
+   status_pack_button = Button(status, text = "Статус паков", bg = 'white', command = lambda: [packstatus(
    get_entry.get(), Link_entry.get(), login_entry.get(), pass_entry.get(), 
       '/containers/all/'), clear()]) 
    status_pack_button.pack()'''
@@ -250,83 +254,79 @@ def get_korob():
    korob_entry.insert(0, "Введи Короб:")
    korob_entry.pack()
    korob.focus_force()
-   PKOb = tk.Button(korob, text = "Переместить в короб", bg = 'White', command = lambda: [Pack_Korob(
+   PKOb = tk.Button(korob, text = "Переместить в короб", bg = 'white', command = lambda: [Pack_Korob(
    packs_entry.get(), Link_entry.get(), login_entry.get(), pass_entry.get(), korob_entry.get(),
       '/tools/move_objects_to_rejectbox', '//*[@id="filterForm"]/button', "btn btn-default", " Перемещен в короб отказов"), clear()])
    PKOb.pack()
-                  
-notify = Notification(app_id='Main.py',
-                      title='Pack Helper',
-                      msg='Процесс завершен',
-                      duration='long',
-                      icon='./workscript-main/icon.png')                   
-#Конец команд и фукнций
+
+@cache
+def show_notify():
+   notify = ToastNotifier()
+   notify.show_toast('Pups helper' ,'Процесс завершён', icon_path='./image.jpg', duration= 10)                                   
+#Конец команд и функций
 
 #Начало интерфейса
 root = tk.Tk()
-root.title("Pack Helper")
-root.geometry("300x480")
-root['background'] = 'White'
+root.title("Pups Helper")
+root.geometry("675x800")
+root['background'] = 'white'
+
 
 first_frame = tk.Frame(root, bg = 'white', width = 200, height = 400)
 first_frame.grid(row = 0, column = 0, padx = 5, pady = 5)
-
-style = Style()
-style.map('TButton', foreground = ([('active', 'black')]))                    
-style.configure("TButton", font=("Arial", 10),bold = True, borderwidth = 2)
       
-tk.Label(first_frame, text = "F1RST LINE", bg = 'White', relief = RAISED).grid(row = 0, column = 0, padx = 100, pady = 3)
+tk.Label(first_frame, text = "F1RST LINE", bg = 'white', relief = RAISED).grid(row = 0, column = 0, padx = (300,0), pady = 3)
 
-tk.Label(text = "Логин", bg = 'White').grid(row = 1, column = 0, padx = (10, 160), pady = (0, 5))
+tk.Label(text = "Логин", bg = 'white').grid(row = 1, column = 1, padx = (10, 160), pady = (0, 5))
 login_entry = tk.Entry(root, width=20)
-login_entry.grid(row = 2, column = 0, padx = (10, 160), pady = (0, 50))
+login_entry.grid(row = 2, column = 1, padx = (10, 160), pady = (0, 50))
 
-tk.Label(text="Пароль", bg = 'White').grid(row = 1, column = 0, padx = (165, 10), pady = (0, 5))
+tk.Label(text="Пароль", bg = 'white').grid(row = 1, column = 1, padx = (165, 10), pady = (0, 5))
 pass_entry = tk.Entry(root, show = "*", width = 20) 
-pass_entry.grid(row = 2, column = 0, padx = (165, 10), pady = (0, 50))
+pass_entry.grid(row = 2, column = 1, padx = (165, 10), pady = (0, 50))
 
 Link_entry = tk.Entry(root, width = 45)
-Link_entry.grid(row = 2, column = 0, padx = (10, 10), pady = (30, 0))
+Link_entry.grid(row = 1, column = 0, padx = (10, 10), pady = (30, 0))
 Link_entry.insert(0, "Введи ссылку")
 Link_entry.bind("<FocusIn>", Link_temp_text)
 
 packs_entry = tk.Entry(root, width = 45) 
-packs_entry.grid(row = 3, column = 0, padx = (10, 10), pady = 5)
+packs_entry.grid(row = 2, column = 0, padx = (10, 10), pady = 5)
 packs_entry.insert(0, "Введи паки/заказы:")
 packs_entry.bind("<FocusIn>", Pack_temp_text)
 
-DB = tk.Button(text = "Удалить паки",  bg = 'White', command = lambda: [Pack_act(
+DB = tk.Button(text = "Удалить паки",  bg = 'white', command = lambda: [Pack_act(
    packs_entry.get(), Link_entry.get(), login_entry.get(), pass_entry.get(), 
       '/tools/unknown_pack_removal', "submit0", "jq-remove-pack-button", " удален",), clear()])
-DB.grid(row = 7, column = 0, padx = 10, pady = 5,  sticky="nsew")   
+DB.grid(row = 7, column = 0, padx = 10, sticky = 'nsew'  )   
 
-NDB = tk.Button(text = "Пометить недопоставкой",  bg = 'White', command = lambda: [Pack_act(
+NDB = tk.Button(text = "Пометить недопоставкой",  bg = 'white', command = lambda: [Pack_act(
    packs_entry.get(), Link_entry.get(), login_entry.get(), pass_entry.get(), 
       '/tools/mark_pack_missing', "submit0", "jq-mark-pack-missing-button", " помечен недопоставкой"), clear()])
 NDB.grid(row = 8, column = 0, padx = 10, pady = 5, sticky = "nsew")
 
-DVB = tk.Button(text = "Переместить в зону ДВ", bg = 'White', command = lambda: [Pack_Perenos(
+DVB = tk.Button(text = "Переместить в зону ДВ", bg = 'white', command = lambda: [Pack_Perenos(
    packs_entry.get(), Link_entry.get(), login_entry.get(), pass_entry.get(), 
       '/tools/move_pack_to_clearance_zone', "btn-default", "btn-default", " Перемещен в зону ДВ"), clear()])
 DVB.grid(row = 9, column = 0, padx = 10, pady = 5, sticky = "nsew")
 
-PKO = tk.Button(text = "Переместить паки в короб отказов", bg = 'White', command = lambda: [get_korob()])
+PKO = tk.Button(text = "Переместить паки в короб отказов", bg = 'white', command = lambda: [get_korob()])
 PKO.grid(row = 10, column = 0, padx = 10, pady = 5, sticky = "nsew")
 
-StatusPack = tk.Button(text = "Статус Паков", bg = 'White', command = lambda: [packstatus(
+StatusPack = tk.Button(text = "Статус Паков", bg = 'white', command = lambda: [packstatus(
    packs_entry.get(), Link_entry.get(), login_entry.get(), pass_entry.get(), 
       '/containers/all/'), clear()])
 StatusPack.grid(row = 11, column = 0, padx = 10, pady = 5, sticky = "nsew")
 
-StatusOrders = tk.Button(text = "Статус Заказа", bg = 'White', command = lambda: [Order_status(
+StatusOrders = tk.Button(text = "Статус Заказа", bg = 'white', command = lambda: [Order_status(
    packs_entry.get(), Link_entry.get(), login_entry.get(), pass_entry.get(),
      '/orders/index/'), clear()])  
 StatusOrders.grid(row = 12, column = 0, padx = 10, pady = 5, sticky = "nsew")
 
-t = Text(root, height = 7, width = 35, wrap = WORD)
-t.grid(row = 13, column = 0)
+t = Text(root,height=30,width= 35,wrap = WORD)
+t.grid(row = 7, rowspan=15, column = 1, sticky="nes")
 
 s = Scrollbar(root, orient = VERTICAL)
-s.grid(row = 13, column = 0,  padx=(280, 0),  sticky = "nsew") 
+s.grid(row = 7,rowspan=15, column = 1,  padx=(50,0), pady=(0,27),   sticky = "nse") 
 
 root.mainloop()      
