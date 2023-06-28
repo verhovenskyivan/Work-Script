@@ -21,7 +21,7 @@ s.creation_flags  = CREATE_NO_WINDOW
 
 options = webdriver.ChromeOptions()
 options.add_experimental_option("detach", True)
-options.add_argument("--headless")
+#options.add_argument("--headless")
 options.add_argument = {'user-data-dir':'/Users/Application/Chrome/Default'}
 
 driver = webdriver.Chrome(options = options, service=Service(ChromeDriverManager().install()))
@@ -51,7 +51,7 @@ def Pups(link, email, password, sublink):
  
 @cache       
 def output(Object, actiontype): 
-   t.insert(INSERT, ' ' + Object + actiontype + "\n") 
+   t.insert(INSERT, Object + actiontype) 
    time.sleep(0.5) 
    t.update() 
    t.focus_force() 
@@ -121,12 +121,12 @@ def Pack_act(Packlist, link, email, password, sublink, search_button, act_button
             driver.find_element(By.CLASS_NAME, "form-control").clear()
          except NoSuchElementException:
             driver.find_element(By.CLASS_NAME, "form-control").clear()
-            t.insert(INSERT, Pack + " Не"+ actiontype + "\n")
-            output(Pack, actiontype)
+            info = (" Не"+ actiontype + "\n")
+            output(Pack, info)
             #writer(Pack,actiontype, link) 
-            packstatus(Packlist, link, email, password, sublink)
+            #packstatus(Packlist, link, email, password, sublink)
             link_create(link, sublink)
-         show_notify()
+            show_notify()
 
 @cache
 def Pack_Perenos(Packlist, link, email, password, sublink, search_button, act_button, actiontype,):
@@ -178,11 +178,11 @@ def Order_status(Orderlist, link, email, password, status_sublink):
             driver.find_element(By.NAME, "submit0").send_keys(Keys.ENTER)
             value = driver.find_element(By.XPATH, '//*[@id="order11213235Status"]').text
             quant = driver.find_element(By.XPATH, '//*[@id="layout-container-inner"]/table/tbody/tr/td[3]').text
-            info = (" имеет статус: "  + value + " Кол-во товаров: " + quant + "\n")
+            info = (" Cтатус: "  + value + " Кол-во товаров: " + quant + "\n")
             output(Order, info)
          except NoSuchElementException:#Обработка ошибки 
             output(Order, 'Не существует' + "\n")
-         driver.find_element(By.NAME, 'filterValue').clear()
+            driver.find_element(By.NAME, 'filterValue').clear()
             
 @cache
 def packstatus(Packlist, link, email, password, status_sublink):
@@ -192,15 +192,15 @@ def packstatus(Packlist, link, email, password, status_sublink):
          try:
             driver.find_element(By.ID, "input-search").send_keys(Pack)
             driver.find_element(By.NAME, "submit0").send_keys(Keys.ENTER)
-            value = driver.find_element(By.CLASS_NAME, "cell-status").text
-            #driver.find_element(By.XPATH, '//*[@id="list-table"]/tbody/tr/td[6]').text
-            output(Pack) + t.insert(INSERT,"\n" + Pack + " имеет статус:" + "\n" + value )
-            quant = driver.find_element(By.CLASS_NAME, 'cell-itemQuantity').text
+            value = driver.find_element(By.XPATH, '//*[@id="list-table"]/tbody/tr[2]/td[6]').text
+            quant = driver.find_element(By.XPATH, '//*[@id="list-table"]/tbody/tr[2]/td[7]').text
+            info = ('\n' +" Cтатус: " + value + '\n' + " Товаров: " + quant + "\n")
             #driver.find_element(By.XPATH, '//*[@id="list-table"]/tbody/tr/td[8]').text
-            output(Pack) + t.insert(INSERT, "\n" + Pack  + " Кол-во позиций:" + ' ' + quant + "\n" )
+            output(Pack, info)
             driver.find_element(By.ID, "input-search").clear()
          except NoSuchElementException:#Обработка ошибки  
-           output(Pack, actiontype = 'Не найден')
+            output(Pack, 'Не найден')
+            driver.find_element(By.ID, "input-search").clear()
            #writer(Pack, link)      
          
             
@@ -217,35 +217,11 @@ def Sold_sender(Orderlist, link, email, password, sublink, search_button):
             driver.find_element(By.CLASS_NAME, 'ajax queue-restart' ).send_keys(Keys.ENTER)
          except NoSuchElementException:
             print ("No such element")
-
-       
-'''def get_status():
-   status = Toplevel()
-   get_entry = tk.Entry(status, width= 45)
-   get_entry.grid(row = 1, column = 0, padx = (40, 10), pady = (30, 0))
-   get_entry.pack()
-   status_order_button = Button(status, text = 'Статус заказов', bg = 'white', command = lambda: [Order_status(get_entry.get(), Link_entry.get(), login_entry.get(), pass_entry.get(),
-      '//*[@id="all-packs-table"]/tbody/tr/td[4]'), clear()])
-   status_order_button.pack() 
-   status_pack_button = Button(status, text = "Статус паков", bg = 'white', command = lambda: [packstatus(
-   get_entry.get(), Link_entry.get(), login_entry.get(), pass_entry.get(), 
-      '/containers/all/'), clear()]) 
-   status_pack_button.pack()'''
-   
-@cache                      
-def Link_temp_text(e):
-   Link_entry.delete(0, "end")
-   
-@cache
-def Pack_temp_text(e):
-   packs_entry.delete(0, "end")
    
 @cache
 def clear():
    packs_entry.delete(0, END)
-   packs_entry.insert(0, "Введи паки")
    Link_entry.delete(0, END)
-   Link_entry.insert(0, "Введи ссылку")
    
 @cache
 def get_korob():
@@ -263,69 +239,101 @@ def get_korob():
 def show_notify():
    notify = ToastNotifier()
    notify.show_toast('Pups helper' ,'Процесс завершён', icon_path='./image.jpg', duration= 10)                                   
+
 #Конец команд и функций
 
-#Начало интерфейса
+#Объявление интерфейса Tkinter
 root = tk.Tk()
 root.title("Pups Helper")
 root.geometry("675x800")
 root['background'] = 'white'
 
-
+# --- Первый фрейм --- 
 first_frame = tk.Frame(root, bg = 'white', width = 200, height = 400)
 first_frame.grid(row = 0, column = 0, padx = 5, pady = 5)
-      
+
+# --- Лэйбл с надписью F1RST LINE ---       
 tk.Label(first_frame, text = "F1RST LINE", bg = 'white', relief = RAISED).grid(row = 0, column = 0, padx = (300,0), pady = 3)
 
+# --- Лэйбл логина --- 
 tk.Label(text = "Логин", bg = 'white').grid(row = 1, column = 1, padx = (10, 160), pady = (0, 5))
+
+# --- Поле ввода логина и его параметры --- 
 login_entry = tk.Entry(root, width=20)
 login_entry.grid(row = 2, column = 1, padx = (10, 160), pady = (0, 50))
 
+# --- Лэйбл пароля --- 
 tk.Label(text="Пароль", bg = 'white').grid(row = 1, column = 1, padx = (165, 10), pady = (0, 5))
+
+# --- Поле ввода пароля и его параметры --- 
 pass_entry = tk.Entry(root, show = "*", width = 20) 
 pass_entry.grid(row = 2, column = 1, padx = (165, 10), pady = (0, 50))
 
+# --- Лэйбл с запросом ввести ссылку --- 
+tk.Label(text='Введи ссылку:', bg = "white").grid(row = 2, column=0, padx = (100, 100), pady = (0, 5))
+
+# --- Поле ввода ссылки и его параметры --- 
 Link_entry = tk.Entry(root, width = 45)
-Link_entry.grid(row = 1, column = 0, padx = (10, 10), pady = (30, 0))
-Link_entry.insert(0, "Введи ссылку")
-Link_entry.bind("<FocusIn>", Link_temp_text)
+Link_entry.grid(row = 2, column = 0, padx = (10, 10), pady = (30, 0))
 
-packs_entry = tk.Entry(root, width = 45) 
-packs_entry.grid(row = 2, column = 0, padx = (10, 10), pady = 5)
-packs_entry.insert(0, "Введи паки/заказы:")
-packs_entry.bind("<FocusIn>", Pack_temp_text)
+# --- Лэйбл с запросом ввести паки/заказы --- 
+tk.Label(text='Введи паки/заказы:', bg = "white").grid(row = 3, column=0, padx = (100, 100), pady = (0, 5))
 
+# --- Поле ввода паков/заказов --- 
+packs_entry = tk.Entry(root, width = 45,)
+packs_entry.grid(row = 4, column = 0, padx = (10, 10), pady = 5)
+
+# --- Кнопка удаления паков --- 
 DB = tk.Button(text = "Удалить паки",  bg = 'white', command = lambda: [Pack_act(
    packs_entry.get(), Link_entry.get(), login_entry.get(), pass_entry.get(), 
       '/tools/unknown_pack_removal', "submit0", "jq-remove-pack-button", " удален",), clear()])
-DB.grid(row = 7, column = 0, padx = 10, sticky = 'nsew'  )   
 
+# --- Параметры кнопки удаления паков --- 
+DB.grid(row = 16, column = 0, padx = 10, sticky = 'nsew'  )   
+
+# --- Кнопка пометки недопоставкой --- 
 NDB = tk.Button(text = "Пометить недопоставкой",  bg = 'white', command = lambda: [Pack_act(
    packs_entry.get(), Link_entry.get(), login_entry.get(), pass_entry.get(), 
       '/tools/mark_pack_missing', "submit0", "jq-mark-pack-missing-button", " помечен недопоставкой"), clear()])
-NDB.grid(row = 8, column = 0, padx = 10, pady = 5, sticky = "nsew")
 
+# --- Параметры кнопки пометки недопоставкой --- 
+NDB.grid(row = 17, column = 0, padx = 10, pady = 5, sticky = "nsew")
+
+# --- Кнопка переноса в ДВ --- 
 DVB = tk.Button(text = "Переместить в зону ДВ", bg = 'white', command = lambda: [Pack_Perenos(
    packs_entry.get(), Link_entry.get(), login_entry.get(), pass_entry.get(), 
       '/tools/move_pack_to_clearance_zone', "btn-default", "btn-default", " Перемещен в зону ДВ"), clear()])
-DVB.grid(row = 9, column = 0, padx = 10, pady = 5, sticky = "nsew")
 
+# --- Параметры кнопки переноса в ДВ --- 
+DVB.grid(row = 18, column = 0, padx = 10, pady = 5, sticky = "nsew")
+
+# --- Кнопка переноса в короб отказов --- 
 PKO = tk.Button(text = "Переместить паки в короб отказов", bg = 'white', command = lambda: [get_korob()])
-PKO.grid(row = 10, column = 0, padx = 10, pady = 5, sticky = "nsew")
 
+# --- Параметры кнопки переноса в короб отказов --- 
+PKO.grid(row = 19, column = 0, padx = 10, pady = 5, sticky = "nsew")
+
+# --- Кнопка вывода статусов паков --- 
 StatusPack = tk.Button(text = "Статус Паков", bg = 'white', command = lambda: [packstatus(
    packs_entry.get(), Link_entry.get(), login_entry.get(), pass_entry.get(), 
       '/containers/all/'), clear()])
-StatusPack.grid(row = 11, column = 0, padx = 10, pady = 5, sticky = "nsew")
 
+# --- Параметры кнопки статуса паков --- 
+StatusPack.grid(row = 20, column = 0, padx = 10, pady = 5, sticky = "nsew")
+
+# --- Кнопка статуса заказов --- 
 StatusOrders = tk.Button(text = "Статус Заказа", bg = 'white', command = lambda: [Order_status(
    packs_entry.get(), Link_entry.get(), login_entry.get(), pass_entry.get(),
-     '/orders/index/'), clear()])  
-StatusOrders.grid(row = 12, column = 0, padx = 10, pady = 5, sticky = "nsew")
+     '/orders/index/page/1/order_by/deliveryDate/desc/?filterNames=o.orderNr&filterValue='), clear()])
 
+# --- Параметры кнопки статуса заказов ---   
+StatusOrders.grid(row = 21, column = 0, padx = 10, pady = 5, sticky = "nsew")
+
+# --- Поле текстового вывода и его параметры --- 
 t = Text(root,height=30,width= 35,wrap = WORD)
-t.grid(row = 7, rowspan=15, column = 1, sticky="nes")
+t.grid(row = 7, rowspan=15 , column = 1, sticky="nes")
 
+# --- Скролл для поля текстового вывода и его параметры --- 
 s = Scrollbar(root, orient = VERTICAL)
 s.grid(row = 7,rowspan=15, column = 1,  padx=(50,0), pady=(0,27),   sticky = "nse") 
 
