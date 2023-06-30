@@ -5,7 +5,6 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
-from win32process import CREATE_NO_WINDOW
 from tkinter.scrolledtext import *
 from wintoast import ToastNotifier
 from selenium import webdriver
@@ -15,17 +14,14 @@ from tkinter import *
 import tkinter as tk
 import  re, time
 
-
 s = Service('./workscript-main/chromedriver.exe')
-s.creation_flags  = CREATE_NO_WINDOW
 
 options = webdriver.ChromeOptions()
 options.add_experimental_option("detach", True)
-#options.add_argument("--headless")
+options.add_argument("--headless")
 options.add_argument = {'user-data-dir':'/Users/Application/Chrome/Default'}
 
 driver = webdriver.Chrome(options = options, service=Service(ChromeDriverManager().install()))
-
 
 @cache
 def link_create(linkd, sublink):
@@ -57,7 +53,7 @@ def output(Object, actiontype):
    t.focus_force() 
    t.see('end')    
    
-@cache 
+'''@cache 
 def writer(Object, actiontype, link):
    file_object = open('Паки.txt', 'a')
    file_object.write(Object + "Не"+ actiontype + link[2])
@@ -105,7 +101,7 @@ def get_user(email, password):
    pass_entry.get = password     
             
 def Pack_Action():
-   Driver_action(get_object, Pups, get_user, )
+   Driver_action(get_object, Pups, get_user)'''
                             
 @cache
 def Pack_act(Packlist, link, email, password, sublink, search_button, act_button, actiontype,):
@@ -126,7 +122,8 @@ def Pack_act(Packlist, link, email, password, sublink, search_button, act_button
             #writer(Pack,actiontype, link) 
             #Pack_status(Packlist, link, email, password, sublink)
             link_create(link, sublink)
-            show_notify()
+            show_notify('Что-то пошло не так')
+         show_notify('Процесс завершен')
 
 @cache
 def Pack_Perenos(Packlist, link, email, password, sublink, search_button, act_button, actiontype,):
@@ -144,10 +141,11 @@ def Pack_Perenos(Packlist, link, email, password, sublink, search_button, act_bu
             driver.find_element(By.CLASS_NAME, "form-control").clear()
             t.insert(INSERT, Pack + " Не"+ actiontype + "\n")
             output(Pack, actiontype)
-            #writer(Pack, actiontype, link)
             Pack_status(Packlist, link, email, password, sublink)
             link_create(link, sublink)
-                  
+            show_notify('Что-то пошло не так)')
+         show_notify('Паки перемещены')  
+                         
 @cache
 def Pack_Korob(Packlist, link, email, password, korob, sublink, search_button, act_button, actiontype):
     Pups(link, email, password, sublink)
@@ -164,7 +162,6 @@ def Pack_Korob(Packlist, link, email, password, korob, sublink, search_button, a
             driver.find_element(By.CLASS_NAME, "form-control").clear()
          except NoSuchElementException:#Обработка ошибки
             output(Pack, actiontype)
-            #writer(Pack, actiontype, link)
             Pack_status(Packlist, link, email, password, sublink)
             link_create(link, sublink)
                
@@ -184,6 +181,7 @@ def Order_status(Orderlist, link, email, password, status_sublink):
          except NoSuchElementException:#Обработка ошибки 
             output(Order, 'Не существует' + "\n")
             driver.find_element(By.NAME, 'filterValue').clear()
+         show_notify('Статусы по заказам выгружены')
 
 @cache
 def Pack_status(Packlist, link, email, password, status_sublink):
@@ -193,16 +191,15 @@ def Pack_status(Packlist, link, email, password, status_sublink):
          try:
             driver.find_element(By.ID, "input-search").send_keys(Pack)
             driver.find_element(By.NAME, "submit0").send_keys(Keys.ENTER)
-            value = driver.find_element(By.XPATH, '//*[@id="list-table"]/tbody/tr[2]/td[6]').text
-            quant = driver.find_element(By.XPATH, '//*[@id="list-table"]/tbody/tr[2]/td[7]').text
+            value = driver.find_element(By.XPATH, '/html/body/div[4]/div[4]/table/tbody/tr/td[6]').text
+            quant = driver.find_element(By.XPATH, '/html/body/div[4]/div[4]/table/tbody/tr/td[7]').text
             info = ('\n' +" Cтатус: " + value + '\n' + " Товаров: " + quant + "\n")
-            #driver.find_element(By.XPATH, '//*[@id="list-table"]/tbody/tr/td[8]').text
             output(Pack, info)
             driver.find_element(By.ID, "input-search").clear()
          except NoSuchElementException:#Обработка ошибки  
             output(Pack, 'Не найден')
-            driver.find_element(By.ID, "input-search").clear()
-           #writer(Pack, link)      
+            driver.find_element(By.ID, "input-search").clear()    
+         show_notify('Статусы по пакам выгружены')
          
             
 def Sold_sender(Orderlist, link, email, password, sublink, search_button):
@@ -240,9 +237,9 @@ def get_korob():
    PKOb.pack()
 
 @cache
-def show_notify():
+def show_notify(status):
    notify = ToastNotifier()
-   notify.show_toast('Pups helper' ,'Процесс завершён', icon_path='./image.jpg', duration= 10)
+   notify.show_toast('Pups helper' , status , icon_path='./image.jpg', duration= 10)
 
 #Конец команд и функций
 
