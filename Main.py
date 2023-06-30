@@ -18,7 +18,7 @@ s = Service('./workscript-main/chromedriver.exe')
 
 options = webdriver.ChromeOptions()
 options.add_experimental_option("detach", True)
-options.add_argument("--headless")
+#options.add_argument("--headless")
 options.add_argument = {'user-data-dir':'/Users/Application/Chrome/Default'}
 
 driver = webdriver.Chrome(options = options, service=Service(ChromeDriverManager().install()))
@@ -47,7 +47,7 @@ def Pups(link, email, password, sublink):
  
 @cache       
 def output(Object, actiontype): 
-   t.insert(INSERT, Object + actiontype) 
+   t.insert(INSERT, Object + actiontype ) 
    time.sleep(0.5) 
    t.update() 
    t.focus_force() 
@@ -168,20 +168,22 @@ def Pack_Korob(Packlist, link, email, password, korob, sublink, search_button, a
 @cache
 def Order_status(Orderlist, link, email, password, status_sublink):
    Pups(link, email, password, status_sublink)
-   for Order in re.split('[";|,|:|\n|\\|/|//|  "]', Orderlist):
+   for Order in re.split('[";|,|:|\n|\\|/|//|.| | "]', Orderlist):
      if Order != '':
          try:
             driver.find_element(By.NAME, 'filterValue').send_keys(Order) 
             driver.find_element(By.NAME, "submit0").send_keys(Keys.ENTER)
-            index = driver.find_element(By.XPATH, '/html/body/div[4]/div[4]/form/table/tbody/tr/td[2]').text
-            status = driver.find_element(By.XPATH, f'//*[@id="order{index}Status"]').text
-            info = ('\n' + " Cтатус: "  + status + "\n")
+            index = driver.find_element(By.XPATH, '/html/body/div[4]/div[4]/form/table/tbody/tr/td[4]/a').get_attribute('href').split('/')
+            order_id = index[5]                
+            #status = driver.find_element(By.XPATH, f'//*[@id="order{order_id}Status"]').text
+            info = ('\n' + " Cтатус: "  + (driver.find_element(By.XPATH, f'//*[@id="order{order_id}Status"]').text) + '\n')
             output(Order, info)
             driver.find_element(By.NAME, 'filterValue').clear()
          except NoSuchElementException:#Обработка ошибки 
-            output(Order, 'Не существует' + "\n")
+            output(Order, 'Не существует')
             driver.find_element(By.NAME, 'filterValue').clear()
-         show_notify('Статусы по заказам выгружены')
+         #show_notify('Статусы по заказам выгружены')
+   output('------------','------------- \n')
 
 @cache
 def Pack_status(Packlist, link, email, password, status_sublink):
@@ -199,7 +201,8 @@ def Pack_status(Packlist, link, email, password, status_sublink):
          except NoSuchElementException:#Обработка ошибки  
             output(Pack, 'Не найден')
             driver.find_element(By.ID, "input-search").clear()    
-         show_notify('Статусы по пакам выгружены')
+         #show_notify('Статусы по пакам выгружены')
+         output('------------','------------- \n')
          
             
 def Sold_sender(Orderlist, link, email, password, sublink, search_button):
