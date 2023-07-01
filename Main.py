@@ -18,7 +18,7 @@ s = Service('./workscript-main/chromedriver.exe')
 
 options = webdriver.ChromeOptions()
 options.add_experimental_option("detach", True)
-#options.add_argument("--headless")
+# options.add_argument("--headless")
 options.add_argument = {'user-data-dir':'/Users/Application/Chrome/Default'}
 
 driver = webdriver.Chrome(options = options, service=Service(ChromeDriverManager().install()))
@@ -47,7 +47,7 @@ def Pups(link, email, password, sublink):
  
 @cache       
 def output(Object, actiontype): 
-   t.insert(INSERT, Object + actiontype ) 
+   t.insert(INSERT, Object + "\n" + ' ' + actiontype + '\n') 
    time.sleep(0.5) 
    t.update() 
    t.focus_force() 
@@ -117,18 +117,20 @@ def Pack_act(Packlist, link, email, password, sublink, search_button, act_button
             driver.find_element(By.CLASS_NAME, "form-control").clear()
          except NoSuchElementException:
             driver.find_element(By.CLASS_NAME, "form-control").clear()
-            info = (" Не"+ actiontype + "\n")
+            info = ("Не"+ actiontype + "\n")
             output(Pack, info)
             #writer(Pack,actiontype, link) 
             #Pack_status(Packlist, link, email, password, sublink)
             link_create(link, sublink)
             show_notify('Что-то пошло не так')
-         show_notify('Процесс завершен')
-
+      time.sleep(0.2)
+   show_notify('Процесс завершен')
+   output('------------','------------- \n')
+   
 @cache
 def Pack_Perenos(Packlist, link, email, password, sublink, search_button, act_button, actiontype,):
-    Pups(link, email, password, sublink)
-    for Pack in re.split('[";|,|:|\n|\\|/|//| "]',Packlist): 
+   Pups(link, email, password, sublink)
+   for Pack in re.split('[";|,|:|\n|\\|/|//| "]',Packlist): 
       if Pack != '': 
          driver.find_element(By.CLASS_NAME, "form-control").send_keys(Pack)
          driver.find_element(By.CLASS_NAME, search_button).send_keys(Keys.ENTER)
@@ -144,7 +146,9 @@ def Pack_Perenos(Packlist, link, email, password, sublink, search_button, act_bu
             Pack_status(Packlist, link, email, password, sublink)
             link_create(link, sublink)
             show_notify('Что-то пошло не так)')
-         show_notify('Паки перемещены')  
+      time.sleep(0.2)
+   show_notify('Процесс завершен')
+   output('------------','------------- \n')
                          
 @cache
 def Pack_Korob(Packlist, link, email, password, korob, sublink, search_button, act_button, actiontype):
@@ -169,53 +173,68 @@ def Pack_Korob(Packlist, link, email, password, korob, sublink, search_button, a
 def Order_status(Orderlist, link, email, password, status_sublink):
    Pups(link, email, password, status_sublink)
    for Order in re.split('[";|,|:|\n|\\|/|//|.| | "]', Orderlist):
-     if Order != '':
+      if Order != '':
          try:
             driver.find_element(By.NAME, 'filterValue').send_keys(Order) 
             driver.find_element(By.NAME, "submit0").send_keys(Keys.ENTER)
-            index = driver.find_element(By.XPATH, '/html/body/div[4]/div[4]/form/table/tbody/tr/td[4]/a').get_attribute('href').split('/')
+            index = driver.find_element(By.XPATH, 
+                  '/html/body/div[4]/div[4]/form/table/tbody/tr/td[4]/a').get_attribute('href').split('/')
             order_id = index[5]                
-            #status = driver.find_element(By.XPATH, f'//*[@id="order{order_id}Status"]').text
-            info = ('\n' + " Cтатус: "  + (driver.find_element(By.XPATH, f'//*[@id="order{order_id}Status"]').text) + '\n')
+            
+            info = ('\n' + " Cтатус: "  + 
+                  (driver.find_element(By.XPATH, f'//*[@id="order{order_id}Status"]').text) + '\n')
             output(Order, info)
             driver.find_element(By.NAME, 'filterValue').clear()
          except NoSuchElementException:#Обработка ошибки 
-            output(Order, 'Не существует')
+              index = driver.find_element(By.XPATH, 
+                     '/html/body/div[4]/div[4]/table/tbody/tr/td[1]').text 
+              info = driver.find_element(By.XPATH, 
+                     f'//*[@id="order{index}Status"]').text
+              driver.find_element(By.NAME, 'filterValue').clear()
+              output(Order, info)
+         except Exception: 
+            output(Order, ' Не существует') 
             driver.find_element(By.NAME, 'filterValue').clear()
-         #show_notify('Статусы по заказам выгружены')
+      time.sleep(0.2)
+   show_notify('Процесс завершен')
    output('------------','------------- \n')
 
 @cache
 def Pack_status(Packlist, link, email, password, status_sublink):
    Pups(link, email, password, status_sublink)
    for Pack in re.split('[";|,|:|\n|\\|/|//| "]', Packlist):
-     if Pack != '':
+      if Pack != '':
          try:
             driver.find_element(By.ID, "input-search").send_keys(Pack)
             driver.find_element(By.NAME, "submit0").send_keys(Keys.ENTER)
             value = driver.find_element(By.XPATH, '/html/body/div[4]/div[4]/table/tbody/tr/td[6]').text
             quant = driver.find_element(By.XPATH, '/html/body/div[4]/div[4]/table/tbody/tr/td[7]').text
-            info = ('\n' +" Cтатус: " + value + '\n' + " Товаров: " + quant + "\n")
+            info = (" Cтатус: " + value + '\n' + " Товаров: " + quant + "\n")
             output(Pack, info)
             driver.find_element(By.ID, "input-search").clear()
          except NoSuchElementException:#Обработка ошибки  
             output(Pack, 'Не найден')
             driver.find_element(By.ID, "input-search").clear()    
          #show_notify('Статусы по пакам выгружены')
-         output('------------','------------- \n')
-         
+   show_notify('Процесс завершен')
+   output('------------','------------- \n')          
             
-def Sold_sender(Orderlist, link, email, password, sublink, search_button):
+def Sold_sender(Orderlist, link, email, password, sublink):
    Pups(link, email, password, sublink)
    for Order in re.split('[";|,|:|\n|\\|/|//| "]',Orderlist): 
       if Order != '': 
          driver.find_element(By.CLASS_NAME, "form-control").send_keys(Order)#Ввод в графу поиска
-         driver.find_element(By.CLASS_NAME, search_button).send_keys(Keys.ENTER)#Нажатие кнопки поиск
+         driver.find_element(By.XPATH,'/html/body/div[4]/div[4]/div[2]/form/button[1]').send_keys(Keys.ENTER)#Нажатие кнопки поиск
          try:
-            driver.find_element(By.XPATH, '/html/body/div[4]/div[4]/div[3]/table/tbody/tr[1]/td[8]/a[2]').click() #delivered
-            driver.find_element(By.XPATH, '')
+            delivered = driver.find_elements(By.XPATH,"//td[contains(text(),'UpdateStatusSingleOrder')]/preceding-sibling::td[1]") 
+            for delivery in delivered:
+              print(delivery.text)
+            #delivered = driver.find_element(By.XPATH, '//td[contains(text(),"delivered")]')
+            restart = driver.find_element(By.LINK_TEXT, 'Перезапустить')
+            print(restart.get_attribute('href`'))
+            '''driver.find_element(By.XPATH, '')
             driver.find_element(By.LINK_TEXT, 'arrive')
-            driver.find_element(By.CLASS_NAME, 'ajax queue-restart' ).send_keys(Keys.ENTER)
+            driver.find_element(By.CLASS_NAME, 'ajax queue-restart' ).send_keys(Keys.ENTER)'''
          except NoSuchElementException:
             print ("No such element")
    
@@ -292,40 +311,45 @@ DB = tk.Button(text = "Удалить паки",  bg = 'white', command = lambda
    packs_entry.get(), Link_entry.get(), login_entry.get(), pass_entry.get(), 
       '/tools/unknown_pack_removal', "submit0", "jq-remove-pack-button", " удален",), clear()])
 # --- Параметры кнопки удаления паков --- 
-DB.grid(row = 16, column = 0, padx = 10, sticky = 'nsew'  )   
+DB.grid(row = 15, column = 0, padx = 10, sticky = 'nsew'  )   
 
 # --- Кнопка пометки недопоставкой --- 
 NDB = tk.Button(text = "Пометить недопоставкой",  bg = 'white', command = lambda: [Pack_act(
    packs_entry.get(), Link_entry.get(), login_entry.get(), pass_entry.get(), 
       '/tools/mark_pack_missing', "submit0", "jq-mark-pack-missing-button", " помечен недопоставкой"), clear()])
 # --- Параметры кнопки пометки недопоставкой --- 
-NDB.grid(row = 17, column = 0, padx = 10, pady = 5, sticky = "nsew")
+NDB.grid(row = 16, column = 0, padx = 10, pady = 5, sticky = "nsew")
 
 # --- Кнопка переноса в ДВ --- 
 DVB = tk.Button(text = "Переместить в зону ДВ", bg = 'white', command = lambda: [Pack_Perenos(
    packs_entry.get(), Link_entry.get(), login_entry.get(), pass_entry.get(), 
       '/tools/move_pack_to_clearance_zone', "btn-default", "btn-default", " Перемещен в зону ДВ"), clear()])
 # --- Параметры кнопки переноса в ДВ --- 
-DVB.grid(row = 18, column = 0, padx = 10, pady = 5, sticky = "nsew")
+DVB.grid(row = 17, column = 0, padx = 10, pady = 5, sticky = "nsew")
 
 # --- Кнопка переноса в короб отказов --- 
 PKO = tk.Button(text = "Переместить паки в короб отказов", bg = 'white', command = lambda: [get_korob()])
 # --- Параметры кнопки переноса в короб отказов --- 
-PKO.grid(row = 19, column = 0, padx = 10, pady = 5, sticky = "nsew")
+PKO.grid(row = 18, column = 0, padx = 10, pady = 5, sticky = "nsew")
 
 # --- Кнопка вывода статусов паков --- 
 StatusPack = tk.Button(text = "Статус Паков", bg = 'white', command = lambda: [Pack_status(
    packs_entry.get(), Link_entry.get(), login_entry.get(), pass_entry.get(), 
       '/containers/all/'), clear()])
 # --- Параметры кнопки статуса паков --- 
-StatusPack.grid(row = 20, column = 0, padx = 10, pady = 5, sticky = "nsew")
+StatusPack.grid(row = 19, column = 0, padx = 10, pady = 5, sticky = "nsew")
 
 # --- Кнопка статуса заказов --- 
 StatusOrders = tk.Button(text = "Статус Заказа", bg = 'white', command = lambda: [Order_status(
    packs_entry.get(), Link_entry.get(), login_entry.get(), pass_entry.get(),
      '/orders/index/page/1/order_by/deliveryDate/desc/?filterNames=o.orderNr&filterValue='), clear()])
 # --- Параметры кнопки статуса заказов ---   
-StatusOrders.grid(row = 21, column = 0, padx = 10, pady = 5, sticky = "nsew")
+StatusOrders.grid(row = 20, column = 0, padx = 10, pady = 5, sticky = "nsew")
+
+Sold_Sender_btn = tk.Button(text = "Отправить солды", bg = 'white', command = lambda: [Sold_sender(
+   packs_entry.get(), Link_entry.get(), login_entry.get(), pass_entry.get(),
+      '/queue/page/1?search=' )])
+Sold_Sender_btn.grid(row = 21, column = 0, padx = 10, pady = 5, sticky = "nsew")
 
 # --- Кнопка очистки поля вывода ---
 clear_button = tk.Button(text = 'Очистить', bg = 'white', command = clear_textbox)
