@@ -16,12 +16,12 @@ import  re, time
 
 s = Service('./workscript-main/chromedriver.exe')
 
-options = webdriver.ChromeOptions()
-options.add_experimental_option("detach", True)
-# options.add_argument("--headless")
-options.add_argument = {'user-data-dir':'/Users/Application/Chrome/Default'}
+option = webdriver.ChromeOptions()
+option.add_experimental_option("detach", True)
+#option.add_argument("--headless")
+option.add_argument = {'user-data-dir':'/Users/Application/Chrome/Default'}
 
-driver = webdriver.Chrome(options = options, service=Service(ChromeDriverManager().install()))
+driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options = option )
 
 @cache
 def link_create(linkd, sublink):
@@ -52,14 +52,8 @@ def output(Object, actiontype):
    t.update() 
    t.focus_force() 
    t.see('end')    
-   
-'''@cache 
-def writer(Object, actiontype, link):
-   file_object = open('Паки.txt', 'a')
-   file_object.write(Object + "Не"+ actiontype + link[2])
-   file_object.write("\n")
-   file_object.close() 
 
+'''
 @cache 
 def Driver_action(Object_List, link, email, password, sublink, search_button_insert, 
                   search_button_press, act_button, actiontype):
@@ -119,7 +113,6 @@ def Pack_act(Packlist, link, email, password, sublink, search_button, act_button
             driver.find_element(By.CLASS_NAME, "form-control").clear()
             info = ("Не"+ actiontype + "\n")
             output(Pack, info)
-            #writer(Pack,actiontype, link) 
             #Pack_status(Packlist, link, email, password, sublink)
             link_create(link, sublink)
             show_notify('Что-то пошло не так')
@@ -180,7 +173,6 @@ def Order_status(Orderlist, link, email, password, status_sublink):
             index = driver.find_element(By.XPATH, 
                   '/html/body/div[4]/div[4]/form/table/tbody/tr/td[4]/a').get_attribute('href').split('/')
             order_id = index[5]                
-            
             info = ('\n' + " Cтатус: "  + 
                   (driver.find_element(By.XPATH, f'//*[@id="order{order_id}Status"]').text) + '\n')
             output(Order, info)
@@ -192,9 +184,9 @@ def Order_status(Orderlist, link, email, password, status_sublink):
                      f'//*[@id="order{index}Status"]').text
               driver.find_element(By.NAME, 'filterValue').clear()
               output(Order, info)
-         except Exception: 
+         '''except Exception: 
             output(Order, ' Не существует') 
-            driver.find_element(By.NAME, 'filterValue').clear()
+            driver.find_element(By.NAME, 'filterValue').clear()'''
       time.sleep(0.2)
    show_notify('Процесс завершен')
    output('------------','------------- \n')
@@ -228,16 +220,13 @@ def Sold_sender(Orderlist, link, email, password, sublink):
          try:
             delivered = driver.find_elements(By.XPATH,"//td[contains(text(),'UpdateStatusSingleOrder')]/preceding-sibling::td[1]") 
             for delivery in delivered:
-              print(delivery.text)
-            #delivered = driver.find_element(By.XPATH, '//td[contains(text(),"delivered")]')
-            restart = driver.find_element(By.LINK_TEXT, 'Перезапустить')
-            print(restart.get_attribute('href`'))
-            '''driver.find_element(By.XPATH, '')
-            driver.find_element(By.LINK_TEXT, 'arrive')
-            driver.find_element(By.CLASS_NAME, 'ajax queue-restart' ).send_keys(Keys.ENTER)'''
+               restart_btn = f'href="/queue/restart/id/{delivery.text}"'
+               print(restart_btn)
+            output(Order, 'Солды отправлены')
          except NoSuchElementException:
-            print ("No such element")
-   
+            output(Order, 'Не найден')
+   output('------------','------------- \n')
+
 @cache
 def clear():
    packs_entry.delete(0, END)
