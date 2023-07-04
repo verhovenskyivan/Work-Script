@@ -18,7 +18,7 @@ s = Service('./workscript-main/chromedriver.exe')
 
 option = webdriver.ChromeOptions()
 option.add_experimental_option("detach", True)
-#option.add_argument("--headless")
+option.add_argument("--headless")
 option.add_argument = {'user-data-dir':'/Users/Application/Chrome/Default'}
 
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options = option )
@@ -184,9 +184,6 @@ def Order_status(Orderlist, link, email, password, status_sublink):
                      f'//*[@id="order{index}Status"]').text
               driver.find_element(By.NAME, 'filterValue').clear()
               output(Order, info)
-         '''except Exception: 
-            output(Order, ' Не существует') 
-            driver.find_element(By.NAME, 'filterValue').clear()'''
       time.sleep(0.2)
    show_notify('Процесс завершен')
    output('------------','------------- \n')
@@ -207,7 +204,6 @@ def Pack_status(Packlist, link, email, password, status_sublink):
          except NoSuchElementException:#Обработка ошибки  
             output(Pack, 'Не найден')
             driver.find_element(By.ID, "input-search").clear()    
-         #show_notify('Статусы по пакам выгружены')
    show_notify('Процесс завершен')
    output('------------','------------- \n')          
             
