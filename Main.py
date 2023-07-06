@@ -98,6 +98,48 @@ def get_user(email, password):
             
 def Pack_Action():
    Driver_action(get_object, Pups, get_user)'''
+
+def Novohohlovskaya(Orderlist, link, email, password, status_sublink):
+   Pups(link, email, password, status_sublink)
+   for Order in re.split('[";|,|:|\n|\\|/|//|.| | "]', Orderlist):
+      if Order != '':
+         try:
+            driver.find_element(By.NAME, 'filterValue').send_keys(Order) 
+            driver.find_element(By.NAME, "submit0").send_keys(Keys.ENTER)
+            index = driver.find_element(By.XPATH, 
+                  '/html/body/div[4]/div[4]/form/table/tbody/tr/td[4]/a').get_attribute('href').split('/')
+            order_id = index[5]                
+            info = ('\n' + " Cтатус: "  + 
+                  (driver.find_element(By.XPATH, f'//*[@id="order{order_id}Status"]').text) + '\n')
+            output(Order, info)
+            if info == 'отменен':
+               output(Order, 'заказ отменен, паки переместить в зону ДВ')
+               driver.find_element(By.XPATH, '/html/body/div[4]/div[4]/table/tbody/tr/td[15]/div/a[1]').send_keys(Keys.ENTER)
+               Pack = driver.find_element(By.XPATH, '//*[@id="all"]/table/tbody/tr[1]/td[1]').text
+               print(Pack)
+               Pack_Perenos(Pack, link, email, password, '/tools/move_pack_to_clearance_zone',
+                            "btn-default", "btn-default", " Перемещен в зону ДВ")
+            else:
+               Pack_status(Pack,link, email, password, '/containers/all/')
+            driver.find_element(By.NAME, 'filterValue').clear()
+         except NoSuchElementException:#Обработка ошибки 
+              index = driver.find_element(By.XPATH, 
+                     '/html/body/div[4]/div[4]/table/tbody/tr/td[1]').text 
+              info = driver.find_element(By.XPATH, 
+                     f'//*[@id="order{index}Status"]').text
+              output(Order, info)
+              driver.find_element(By.NAME, 'filterValue').clear()
+              if info == 'отменен':
+               driver.find_element(By.XPATH, '/html/body/div[4]/div[4]/table/tbody/tr/td[15]/div/a[1]').send_keys(Keys.ENTER)
+               Pack = driver.find_element(By.XPATH, '//*[@id="all"]/table/tbody/tr[1]/td[1]').text
+               print(Pack)
+               Pack_Perenos(Pack, link, email, password, '/tools/move_pack_to_clearance_zone',
+                            "btn-default", "btn-default", "Перемещен в зону ДВ")
+               link_create(link, status_sublink )
+               driver.find_element(By.NAME, 'filterValue').clear()     
+   show_notify('Процесс завершен')
+   output('------------','-------------')
+
                             
 @cache
 def Pack_act(Packlist, link, email, password, sublink, search_button, act_button, actiontype,):
@@ -141,7 +183,7 @@ def Pack_Perenos(Packlist, link, email, password, sublink, search_button, act_bu
             Pack_status(Packlist, link, email, password, sublink)
             link_create(link, sublink)
             show_notify('Что-то пошло не так)')
-            continue       
+            continue
    show_notify('Процесс завершен')
    output('------------','-------------')     
                          
@@ -178,29 +220,14 @@ def Order_status(Orderlist, link, email, password, status_sublink):
             info = ('\n' + " Cтатус: "  + 
                   (driver.find_element(By.XPATH, f'//*[@id="order{order_id}Status"]').text) + '\n')
             output(Order, info)
-            if info == 'отменен':
-               output(Order, 'заказ отменен, паки переместить в зону ДВ')
-               driver.find_element(By.XPATH, '/html/body/div[4]/div[4]/table/tbody/tr/td[15]/div/a[1]').send_keys(Keys.ENTER)
-               Pack = driver.find_element(By.XPATH, '//*[@id="all"]/table/tbody/tr[1]/td[1]').text
-               print(Pack)
-               Pack_Perenos(Pack, link, email, password, '/tools/move_pack_to_clearance_zone',
-                            "btn-default", "btn-default", " Перемещен в зону ДВ")
-            else:
-               Pack_status(Pack,link, email, password, '/containers/all/')
             driver.find_element(By.NAME, 'filterValue').clear()
          except NoSuchElementException:#Обработка ошибки 
               index = driver.find_element(By.XPATH, 
                      '/html/body/div[4]/div[4]/table/tbody/tr/td[1]').text 
               info = driver.find_element(By.XPATH, 
                      f'//*[@id="order{index}Status"]').text
-              output(Order, info)
-              driver.find_element(By.NAME, 'filterValue').clear()
-              if info == 'отменен':
-               driver.find_element(By.XPATH, '/html/body/div[4]/div[4]/table/tbody/tr/td[15]/div/a[1]').send_keys(Keys.ENTER)
-               Pack = driver.find_element(By.XPATH, '//*[@id="all"]/table/tbody/tr[1]/td[1]').text
-               print(Pack)
-               Pack_Perenos(Pack, link, email, password, '/tools/move_pack_to_clearance_zone',
-                            "btn-default", "btn-default", "Перемещен в зону ДВ")
+              output(Order, info)           
+              driver.find_element(By.NAME, 'filterValue').clear()     
    show_notify('Процесс завершен')
    output('------------','-------------')
 
