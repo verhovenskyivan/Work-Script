@@ -18,7 +18,7 @@ s = Service('./workscript-main/chromedriver.exe')
 
 option = webdriver.ChromeOptions()
 option.add_experimental_option("detach", True)
-option.add_argument("--headless")
+#option.add_argument("--headless")
 option.add_argument = {'user-data-dir':'/Users/Application/Chrome/Default'}
 
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options = option )
@@ -38,8 +38,10 @@ def Pups(link, email, password, sublink):
       driver.find_element(By.ID, 'identity').send_keys(email)
       driver.find_element(By.ID, 'credential').send_keys(password)
       driver.find_element(By.NAME, "submit").send_keys(Keys.ENTER)
+      time.sleep(0.2)
    except WebDriverException:
-      t.insert(INSERT, "\n" + "page down" + "\n")
+      time.sleep(0.2)
+      t.insert(INSERT, "page down" + "\n")
       time.sleep(0.5)
       t.update()
       t.focus_force()
@@ -113,12 +115,12 @@ def Pack_act(Packlist, link, email, password, sublink, search_button, act_button
             driver.find_element(By.CLASS_NAME, "form-control").clear()
             info = ("Не"+ actiontype + "\n")
             output(Pack, info)
-            #Pack_status(Packlist, link, email, password, sublink)
+            Pack_status(Packlist, link, email, password, sublink)
             link_create(link, sublink)
             show_notify('Что-то пошло не так')
-      time.sleep(0.2)
+            continue
    show_notify('Процесс завершен')
-   output('------------','------------- \n')
+   output('------------','-------------')
    
 @cache
 def Pack_Perenos(Packlist, link, email, password, sublink, search_button, act_button, actiontype,):
@@ -134,14 +136,14 @@ def Pack_Perenos(Packlist, link, email, password, sublink, search_button, act_bu
             driver.find_element(By.CLASS_NAME, "form-control").clear()
          except NoSuchElementException or NoAlertPresentException:
             driver.find_element(By.CLASS_NAME, "form-control").clear()
-            t.insert(INSERT, Pack + " Не"+ actiontype + "\n")
-            output(Pack, actiontype)
+            info = ("Не"+ actiontype + "\n")
+            output(Pack, info)
             Pack_status(Packlist, link, email, password, sublink)
             link_create(link, sublink)
             show_notify('Что-то пошло не так)')
-      time.sleep(0.2)
+            continue       
    show_notify('Процесс завершен')
-   output('------------','------------- \n')
+   output('------------','-------------')     
                          
 @cache
 def Pack_Korob(Packlist, link, email, password, korob, sublink, search_button, act_button, actiontype):
@@ -160,8 +162,8 @@ def Pack_Korob(Packlist, link, email, password, korob, sublink, search_button, a
          except NoSuchElementException:#Обработка ошибки
             output(Pack, actiontype)
             Pack_status(Packlist, link, email, password, sublink)
-            link_create(link, sublink)
-               
+            link_create(link, sublink) 
+                          
 @cache
 def Order_status(Orderlist, link, email, password, status_sublink):
    Pups(link, email, password, status_sublink)
@@ -176,17 +178,31 @@ def Order_status(Orderlist, link, email, password, status_sublink):
             info = ('\n' + " Cтатус: "  + 
                   (driver.find_element(By.XPATH, f'//*[@id="order{order_id}Status"]').text) + '\n')
             output(Order, info)
+            if info == 'отменен':
+               output(Order, 'заказ отменен, паки переместить в зону ДВ')
+               driver.find_element(By.XPATH, '/html/body/div[4]/div[4]/table/tbody/tr/td[15]/div/a[1]').send_keys(Keys.ENTER)
+               Pack = driver.find_element(By.XPATH, '//*[@id="all"]/table/tbody/tr[1]/td[1]').text
+               print(Pack)
+               Pack_Perenos(Pack, link, email, password, '/tools/move_pack_to_clearance_zone',
+                            "btn-default", "btn-default", " Перемещен в зону ДВ")
+            else:
+               Pack_status(Pack,link, email, password, '/containers/all/')
             driver.find_element(By.NAME, 'filterValue').clear()
          except NoSuchElementException:#Обработка ошибки 
               index = driver.find_element(By.XPATH, 
                      '/html/body/div[4]/div[4]/table/tbody/tr/td[1]').text 
               info = driver.find_element(By.XPATH, 
                      f'//*[@id="order{index}Status"]').text
-              driver.find_element(By.NAME, 'filterValue').clear()
               output(Order, info)
-      time.sleep(0.2)
+              driver.find_element(By.NAME, 'filterValue').clear()
+              if info == 'отменен':
+               driver.find_element(By.XPATH, '/html/body/div[4]/div[4]/table/tbody/tr/td[15]/div/a[1]').send_keys(Keys.ENTER)
+               Pack = driver.find_element(By.XPATH, '//*[@id="all"]/table/tbody/tr[1]/td[1]').text
+               print(Pack)
+               Pack_Perenos(Pack, link, email, password, '/tools/move_pack_to_clearance_zone',
+                            "btn-default", "btn-default", "Перемещен в зону ДВ")
    show_notify('Процесс завершен')
-   output('------------','------------- \n')
+   output('------------','-------------')
 
 @cache
 def Pack_status(Packlist, link, email, password, status_sublink):
@@ -205,7 +221,7 @@ def Pack_status(Packlist, link, email, password, status_sublink):
             output(Pack, 'Не найден')
             driver.find_element(By.ID, "input-search").clear()    
    show_notify('Процесс завершен')
-   output('------------','------------- \n')          
+   output('------------','-------------')          
             
 def Sold_sender(Orderlist, link, email, password, sublink):
    Pups(link, email, password, sublink)
@@ -221,7 +237,7 @@ def Sold_sender(Orderlist, link, email, password, sublink):
             output(Order, 'Солды отправлены')
          except NoSuchElementException:
             output(Order, 'Не найден')
-   output('------------','------------- \n')
+   output('------------','------------- ')
 
 @cache
 def clear():
