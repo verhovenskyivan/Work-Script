@@ -18,7 +18,7 @@ s = Service('./workscript-main/chromedriver.exe')
 
 option = webdriver.ChromeOptions()
 option.add_experimental_option("detach", True)
-#option.add_argument("--headless")
+option.add_argument("--headless")
 option.add_argument = {'user-data-dir':'/Users/Application/Chrome/Default'}
 
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options = option )
@@ -107,39 +107,23 @@ def Novohohlovskaya(Orderlist, link, email, password, status_sublink):
             driver.find_element(By.NAME, 'filterValue').send_keys(Order) 
             driver.find_element(By.NAME, "submit0").send_keys(Keys.ENTER)
             index = driver.find_element(By.XPATH, 
-                  '/html/body/div[4]/div[4]/form/table/tbody/tr/td[4]/a').get_attribute('href').split('/')
-            order_id = index[5]                
-            info = ('\n' + " Cтатус: "  + 
-                  (driver.find_element(By.XPATH, f'//*[@id="order{order_id}Status"]').text) + '\n')
+                     '/html/body/div[4]/div[4]/table/tbody/tr/td[1]').text 
+            info = driver.find_element(By.XPATH, 
+                     f'//*[@id="order{index}Status"]').text
             output(Order, info)
             if info == 'отменен':
-               output(Order, 'заказ отменен, паки переместить в зону ДВ')
                driver.find_element(By.XPATH, '/html/body/div[4]/div[4]/table/tbody/tr/td[15]/div/a[1]').send_keys(Keys.ENTER)
-               Pack = driver.find_element(By.XPATH, '//*[@id="all"]/table/tbody/tr[1]/td[1]').text
-               print(Pack)
-               Pack_Perenos(Pack, link, email, password, '/tools/move_pack_to_clearance_zone',
-                            "btn-default", "btn-default", " Перемещен в зону ДВ")
-            else:
-               Pack_status(Pack,link, email, password, '/containers/all/')
+               Packlist = driver.find_element(By.XPATH, '//*[@id="all"]/table/tbody/tr[1]/td[1]').text
+               for Pack in Packlist:
+                  Pack_Perenos(Packlist, link, email, password, '/tools/move_pack_to_clearance_zone',
+                            "btn-default", "btn-default", "Перемещен в зону ДВ")
+               Pups(link, email, password, status_sublink)
             driver.find_element(By.NAME, 'filterValue').clear()
          except NoSuchElementException:#Обработка ошибки 
-              index = driver.find_element(By.XPATH, 
-                     '/html/body/div[4]/div[4]/table/tbody/tr/td[1]').text 
-              info = driver.find_element(By.XPATH, 
-                     f'//*[@id="order{index}Status"]').text
-              output(Order, info)
-              driver.find_element(By.NAME, 'filterValue').clear()
-              if info == 'отменен':
-               driver.find_element(By.XPATH, '/html/body/div[4]/div[4]/table/tbody/tr/td[15]/div/a[1]').send_keys(Keys.ENTER)
-               Pack = driver.find_element(By.XPATH, '//*[@id="all"]/table/tbody/tr[1]/td[1]').text
-               print(Pack)
-               Pack_Perenos(Pack, link, email, password, '/tools/move_pack_to_clearance_zone',
-                            "btn-default", "btn-default", "Перемещен в зону ДВ")
-               link_create(link, status_sublink )
-               driver.find_element(By.NAME, 'filterValue').clear()     
+            output(Order, 'Что-то не так')
+            driver.find_element(By.NAME, 'filterValue').clear()     
    show_notify('Процесс завершен')
    output('------------','-------------')
-
                             
 @cache
 def Pack_act(Packlist, link, email, password, sublink, search_button, act_button, actiontype,):
@@ -374,10 +358,10 @@ StatusOrders = tk.Button(text = "Статус Заказа", bg = 'white', comma
 # --- Параметры кнопки статуса заказов ---   
 StatusOrders.grid(row = 20, column = 0, padx = 10, pady = 5, sticky = "nsew")
 
-Sold_Sender_btn = tk.Button(text = "Отправить солды", bg = 'white', command = lambda: [Sold_sender(
+Novohohlovskaya_btn = tk.Button(text = "Новохохловская", bg = 'white', command = lambda: [Novohohlovskaya(
    packs_entry.get(), Link_entry.get(), login_entry.get(), pass_entry.get(),
-      '/queue/page/1?search=' )])
-Sold_Sender_btn.grid(row = 21, column = 0, padx = 10, pady = 5, sticky = "nsew")
+      '/orders/index/page/1/order_by/deliveryDate/desc/?filterNames=o.orderNr&filterValue=' )])
+Novohohlovskaya_btn.grid(row = 21, column = 0, padx = 10, pady = 5, sticky = "nsew")
 
 # --- Кнопка очистки поля вывода ---
 clear_button = tk.Button(text = 'Очистить', bg = 'white', command = clear_textbox)
