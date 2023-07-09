@@ -123,7 +123,7 @@ def Novohohlovskaya(Orderlist, link, email, password, status_sublink):
             output(Order, 'Что-то не так')
             driver.find_element(By.NAME, 'filterValue').clear()     
    show_notify('Процесс завершен')
-   output('------------','-------------')
+   output('--------------------------------------','')
                             
 @cache
 def Pack_act(Packlist, link, email, password, sublink, search_button, act_button, actiontype,):
@@ -146,7 +146,7 @@ def Pack_act(Packlist, link, email, password, sublink, search_button, act_button
             show_notify('Что-то пошло не так')
             continue
    show_notify('Процесс завершен')
-   output('------------','-------------')
+   output('--------------------------------------','')
    
 @cache
 def Pack_Perenos(Packlist, link, email, password, sublink, search_button, act_button, actiontype,):
@@ -169,7 +169,7 @@ def Pack_Perenos(Packlist, link, email, password, sublink, search_button, act_bu
             show_notify('Что-то пошло не так)')
             continue
    show_notify('Процесс завершен')
-   output('------------','-------------')     
+   output('--------------------------------------','')     
                          
 @cache
 def Pack_Korob(Packlist, link, email, password, korob, sublink, search_button, act_button, actiontype):
@@ -213,7 +213,7 @@ def Order_status(Orderlist, link, email, password, status_sublink):
               output(Order, info)           
               driver.find_element(By.NAME, 'filterValue').clear()     
    show_notify('Процесс завершен')
-   output('------------','-------------')
+   output('--------------------------------------','')
 
 @cache
 def Pack_status(Packlist, link, email, password, status_sublink):
@@ -221,18 +221,19 @@ def Pack_status(Packlist, link, email, password, status_sublink):
    for Pack in re.split('[";|,|:|\n|\\|/|//| "]', Packlist):
       if Pack != '':
          try:
-            driver.find_element(By.ID, "input-search").send_keys(Pack)
+            driver.find_element(By.NAME, "filterValue").send_keys(Pack)
             driver.find_element(By.NAME, "submit0").send_keys(Keys.ENTER)
-            value = driver.find_element(By.XPATH, '/html/body/div[4]/div[4]/table/tbody/tr/td[6]').text
-            quant = driver.find_element(By.XPATH, '/html/body/div[4]/div[4]/table/tbody/tr/td[7]').text
+            value = driver.find_element(By.XPATH, '/html/body/div[4]/div[4]/table/tbody/tr/td[4]').text
+            quant = driver.find_element(By.XPATH, '/html/body/div[4]/div[4]/table/tbody/tr/td[5]').text
             info = (" Cтатус: " + value + '\n' + " Товаров: " + quant + "\n")
             output(Pack, info)
-            driver.find_element(By.ID, "input-search").clear()
+            driver.find_element(By.NAME, "filterValue").clear()
          except NoSuchElementException:#Обработка ошибки  
             output(Pack, 'Не найден')
-            driver.find_element(By.ID, "input-search").clear()    
+            driver.find_element(By.NAME, "filterValue").clear()    
+            continue
    show_notify('Процесс завершен')
-   output('------------','-------------')          
+   output('--------------------------------------','')         
             
 def Sold_sender(Orderlist, link, email, password, sublink):
    Pups(link, email, password, sublink)
@@ -248,7 +249,7 @@ def Sold_sender(Orderlist, link, email, password, sublink):
             output(Order, 'Солды отправлены')
          except NoSuchElementException:
             output(Order, 'Не найден')
-   output('------------','------------- ')
+   output('--------------------------------------','')
 
 @cache
 def clear():
@@ -347,7 +348,7 @@ PKO.grid(row = 18, column = 0, padx = 10, pady = 5, sticky = "nsew")
 # --- Кнопка вывода статусов паков --- 
 StatusPack = tk.Button(text = "Статус Паков", bg = 'white', command = lambda: [Pack_status(
    packs_entry.get(), Link_entry.get(), login_entry.get(), pass_entry.get(), 
-      '/containers/all/'), clear()])
+      '/containers/packs/order_by/o.orderNr/asc/page/1/?filterName=pack.barcode'), clear()])
 # --- Параметры кнопки статуса паков --- 
 StatusPack.grid(row = 19, column = 0, padx = 10, pady = 5, sticky = "nsew")
 
