@@ -110,7 +110,6 @@ def Novohohlovskaya(Orderlist, link, email, password, status_sublink):
                      '/html/body/div[4]/div[4]/table/tbody/tr/td[1]').text 
             info = driver.find_element(By.XPATH, 
                      f'//*[@id="order{index}Status"]').text
-            output(Order, info)
             if info == 'отменен':
                driver.find_element(By.XPATH, '/html/body/div[4]/div[4]/table/tbody/tr/td[15]/div/a[1]').send_keys(Keys.ENTER)
                Packlist = driver.find_element(By.XPATH, '//*[@id="all"]/table/tbody/tr[1]/td[1]').text
@@ -118,6 +117,8 @@ def Novohohlovskaya(Orderlist, link, email, password, status_sublink):
                   Pack_Perenos(Packlist, link, email, password, '/tools/move_pack_to_clearance_zone',
                             "btn-default", "btn-default", "Перемещен в зону ДВ")
                Pups(link, email, password, status_sublink)
+            else:
+               output(Order, info)
             driver.find_element(By.NAME, 'filterValue').clear()
          except NoSuchElementException:#Обработка ошибки 
             output(Order, 'Что-то не так')
