@@ -18,7 +18,7 @@ s = Service('./workscript-main/chromedriver.exe')
 
 option = webdriver.ChromeOptions()
 option.add_experimental_option("detach", True)
-#option.add_argument("--headless")
+option.add_argument("--headless")
 option.add_argument = {'user-data-dir':'/Users/Application/Chrome/Default'}
 
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options = option )
@@ -143,11 +143,13 @@ def Pack_act(Packlist, link, email, password, sublink, search_button, act_button
             info = ("Не"+ actiontype + "\n")
             output(Pack, info)
             Pack_status(Packlist, link, email, password, sublink)
-            link_create(link, sublink)
+            driver.find_element(By.CLASS_NAME, "form-control").send_keys(Pack)#Ввод в графу поиска
+            driver.find_element(By.NAME, search_button).send_keys(Keys.ENTER)
+            driver.find_element(By.CLASS_NAME, "form-control").clear()
             show_notify('Что-то пошло не так')
             continue
    show_notify('Процесс завершен')
-   output('--------------------------------------','')
+   output('-----------------------------------','')
    
 @cache
 def Pack_Perenos(Packlist, link, email, password, sublink, search_button, act_button, actiontype,):
@@ -170,7 +172,7 @@ def Pack_Perenos(Packlist, link, email, password, sublink, search_button, act_bu
             show_notify('Что-то пошло не так)')
             continue
    show_notify('Процесс завершен')
-   output('--------------------------------------','')     
+   output('-----------------------------------','')     
                          
 @cache
 def Pack_Korob(Packlist, link, email, password, korob, sublink, search_button, act_button, actiontype):
@@ -214,7 +216,7 @@ def Order_status(Orderlist, link, email, password, status_sublink):
               output(Order, info)           
               driver.find_element(By.NAME, 'filterValue').clear()     
    show_notify('Процесс завершен')
-   output('--------------------------------------','')
+   output('-----------------------------------','')
 
 @cache
 def Pack_status(Packlist, link, email, password, status_sublink):
@@ -234,7 +236,7 @@ def Pack_status(Packlist, link, email, password, status_sublink):
             driver.find_element(By.NAME, "filterValue").clear()    
             continue
    show_notify('Процесс завершен')
-   output('--------------------------------------','')         
+   output('-----------------------------------','')         
             
 def Sold_sender(Orderlist, link, email, password, sublink):
    Pups(link, email, password, sublink)
