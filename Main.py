@@ -18,7 +18,7 @@ s = Service('./workscript-main/chromedriver.exe')
 
 option = webdriver.ChromeOptions()
 option.add_experimental_option("detach", True)
-option.add_argument("--headless")
+#option.add_argument("--headless")
 option.add_argument = {'user-data-dir':'/Users/Application/Chrome/Default'}
 
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options = option )
