@@ -5,6 +5,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
+from subprocess import CREATE_NO_WINDOW
 from tkinter.scrolledtext import *
 from wintoast import ToastNotifier
 from selenium import webdriver
@@ -15,13 +16,15 @@ import tkinter as tk
 import  re, time
 
 s = Service('./workscript-main/chromedriver.exe')
+s.creationflags = CREATE_NO_WINDOW
 
 option = webdriver.ChromeOptions()
 option.add_experimental_option("detach", True)
-#option.add_argument("--headless")
+option.add_argument("--headless")
 option.add_argument = {'user-data-dir':'/Users/Application/Chrome/Default'}
 
-driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options = option )
+driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options = option)
+driver.set_window_position(-10000,0)
 
 @cache
 def link_create(linkd, sublink):
@@ -40,12 +43,8 @@ def Pups(link, email, password, sublink):
       driver.find_element(By.NAME, "submit").send_keys(Keys.ENTER)
       time.sleep(0.2)
    except WebDriverException:
-      time.sleep(0.2)
-      t.insert(INSERT, "page down" + "\n")
-      time.sleep(0.5)
-      t.update()
-      t.focus_force()
-      t.see('end')     
+      time.sleep(1)
+      pass  
  
 @cache       
 def output(Object, actiontype): 
@@ -55,7 +54,13 @@ def output(Object, actiontype):
    t.focus_force() 
    t.see('end')    
 
-'''
+'''@cache 
+def definition():
+   t.insert(INSERT, '|||||||||||||||||||||||||||||||||||') 
+   t.update() 
+   t.focus_force() 
+   t.see('end')
+
 @cache 
 def Driver_action(Object_List, link, email, password, sublink, search_button_insert, 
                   search_button_press, act_button, actiontype):
@@ -129,7 +134,7 @@ def Novohohlovskaya(Orderlist, link, email, password, status_sublink):
 @cache
 def Pack_act(Packlist, link, email, password, sublink, search_button, act_button, actiontype,):
    Pups(link, email, password, sublink)
-   for Pack in re.split('[";|,|:|\n|\\|/|//| "]',Packlist): 
+   for Pack in re.split('[";|,|:|\n|\\|/|//|.| | "]',Packlist): 
       if Pack != '': 
          driver.find_element(By.CLASS_NAME, "form-control").send_keys(Pack)#Ввод в графу поиска
          driver.find_element(By.NAME, search_button).send_keys(Keys.ENTER)#Нажатие кнопки поиск
@@ -139,22 +144,19 @@ def Pack_act(Packlist, link, email, password, sublink, search_button, act_button
             output(Pack, actiontype)
             driver.find_element(By.CLASS_NAME, "form-control").clear()
          except NoSuchElementException:
-            driver.find_element(By.CLASS_NAME, "form-control").clear()
             info = ("Не"+ actiontype + "\n")
             output(Pack, info)
-            Pack_status(Packlist, link, email, password, sublink)
+            #Pack_status(Packlist, link, email, password, '/containers/packs/order_by/o.orderNr/asc/page/1/?filterName=pack.barcode')
             driver.find_element(By.CLASS_NAME, "form-control").send_keys(Pack)#Ввод в графу поиска
             driver.find_element(By.NAME, search_button).send_keys(Keys.ENTER)
             driver.find_element(By.CLASS_NAME, "form-control").clear()
-            show_notify('Что-то пошло не так')
-            continue
+            pass
    show_notify('Процесс завершен')
-   output('-----------------------------------','')
    
 @cache
 def Pack_Perenos(Packlist, link, email, password, sublink, search_button, act_button, actiontype,):
    Pups(link, email, password, sublink)
-   for Pack in re.split('[";|,|:|\n|\\|/|//| "]',Packlist): 
+   for Pack in re.split('[";|,|:|\n|\\|/|//|.| |"]',Packlist): 
       if Pack != '': 
          driver.find_element(By.CLASS_NAME, "form-control").send_keys(Pack)
          driver.find_element(By.CLASS_NAME, search_button).send_keys(Keys.ENTER)
@@ -170,9 +172,8 @@ def Pack_Perenos(Packlist, link, email, password, sublink, search_button, act_bu
             Pack_status(Packlist, link, email, password, sublink)
             link_create(link, sublink)
             show_notify('Что-то пошло не так)')
-            continue
-   show_notify('Процесс завершен')
-   output('-----------------------------------','')     
+            pass
+   show_notify('Процесс завершен')    
                          
 @cache
 def Pack_Korob(Packlist, link, email, password, korob, sublink, search_button, act_button, actiontype):
@@ -216,12 +217,11 @@ def Order_status(Orderlist, link, email, password, status_sublink):
               output(Order, info)           
               driver.find_element(By.NAME, 'filterValue').clear()     
    show_notify('Процесс завершен')
-   output('-----------------------------------','')
 
 @cache
 def Pack_status(Packlist, link, email, password, status_sublink):
    Pups(link, email, password, status_sublink)
-   for Pack in re.split('[";|,|:|\n|\\|/|//| "]', Packlist):
+   for Pack in re.split('[";|,|:|\n|\\|/|//|.| |"]', Packlist):
       if Pack != '':
          try:
             driver.find_element(By.NAME, "filterValue").send_keys(Pack)
@@ -233,10 +233,9 @@ def Pack_status(Packlist, link, email, password, status_sublink):
             driver.find_element(By.NAME, "filterValue").clear()
          except NoSuchElementException:#Обработка ошибки  
             output(Pack, 'Не найден')
-            driver.find_element(By.NAME, "filterValue").clear()    
-            continue
+            driver.find_element(By.NAME, "filterValue").clear()  
+            pass  
    show_notify('Процесс завершен')
-   output('-----------------------------------','')         
             
 def Sold_sender(Orderlist, link, email, password, sublink):
    Pups(link, email, password, sublink)
@@ -321,6 +320,7 @@ tk.Label(text='Введи паки/заказы:', bg = "white").grid(row = 3, c
 # --- Поле ввода паков/заказов --- 
 packs_entry = tk.Entry(root, width = 45,)
 packs_entry.grid(row = 4, column = 0, padx = (10, 10), pady = 5)
+
 
 # --- Кнопка удаления паков --- 
 DB = tk.Button(text = "Удалить паки",  bg = 'white', command = lambda: [Pack_act(
