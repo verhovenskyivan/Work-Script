@@ -24,7 +24,6 @@ option.add_argument("--headless")
 option.add_argument = {'user-data-dir':'/Users/Application/Chrome/Default'}
 
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options = option)
-driver.set_window_position(-10000,0)
 
 @cache
 def link_create(linkd, sublink):
@@ -145,8 +144,13 @@ def Pack_act(Packlist, link, email, password, sublink, search_button, act_button
             driver.find_element(By.CLASS_NAME, "form-control").clear()
          except NoSuchElementException:
             info = ("Не"+ actiontype + "\n")
+            status = Pack_status(Packlist, link, email, password, 
+                  '/containers/packs/order_by/o.orderNr/asc/page/1/?filterName=pack.barcode')
             output(Pack, info)
-            #Pack_status(Packlist, link, email, password, '/containers/packs/order_by/o.orderNr/asc/page/1/?filterName=pack.barcode')
+            output('Так как имеет статус:', status)
+            if status == 'идет в зону до выяснения':
+               Pack_Perenos(Packlist, link, email, password, '/tools/move_pack_to_clearance_zone',
+                            "btn-default", "btn-default", " Перемещен в зону ДВ")
             driver.find_element(By.CLASS_NAME, "form-control").send_keys(Pack)#Ввод в графу поиска
             driver.find_element(By.NAME, search_button).send_keys(Keys.ENTER)
             driver.find_element(By.CLASS_NAME, "form-control").clear()
@@ -215,7 +219,8 @@ def Order_status(Orderlist, link, email, password, status_sublink):
               info = driver.find_element(By.XPATH, 
                      f'//*[@id="order{index}Status"]').text
               output(Order, info)           
-              driver.find_element(By.NAME, 'filterValue').clear()     
+              driver.find_element(By.NAME, 'filterValue').clear()  
+              pass   
    show_notify('Процесс завершен')
 
 @cache
