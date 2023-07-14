@@ -13,7 +13,7 @@ from functools import cache
 from tkinter.ttk import *
 from tkinter import *
 import tkinter as tk
-import  re, time
+import  re, time, sys, os
 
 s = Service('./workscript-main/chromedriver.exe')
 s.creationflags = CREATE_NO_WINDOW
@@ -53,6 +53,11 @@ def output(Object, actiontype):
    t.focus_force() 
    t.see('end')    
 
+'''@cache
+def restart():
+   python = sys.executable
+   os.restart('Main.py')'''
+   
 '''@cache 
 def definition():
    t.insert(INSERT, '|||||||||||||||||||||||||||||||||||') 
@@ -144,13 +149,13 @@ def Pack_act(Packlist, link, email, password, sublink, search_button, act_button
             driver.find_element(By.CLASS_NAME, "form-control").clear()
          except NoSuchElementException:
             info = ("Не"+ actiontype + "\n")
-            status = Pack_status(Packlist, link, email, password, 
-                  '/containers/packs/order_by/o.orderNr/asc/page/1/?filterName=pack.barcode')
+            '''status = Pack_status(Packlist, link, email, password, 
+                  '/containers/packs/order_by/o.orderNr/asc/page/1/?filterName=pack.barcode')'''
             output(Pack, info)
-            output('Так как имеет статус:', status)
+            '''output('Так как имеет статус:', status)
             if status == 'идет в зону до выяснения':
                Pack_Perenos(Packlist, link, email, password, '/tools/move_pack_to_clearance_zone',
-                            "btn-default", "btn-default", " Перемещен в зону ДВ")
+                            "btn-default", "btn-default", " Перемещен в зону ДВ")'''
             driver.find_element(By.CLASS_NAME, "form-control").send_keys(Pack)#Ввод в графу поиска
             driver.find_element(By.NAME, search_button).send_keys(Keys.ENTER)
             driver.find_element(By.CLASS_NAME, "form-control").clear()
@@ -170,12 +175,17 @@ def Pack_Perenos(Packlist, link, email, password, sublink, search_button, act_bu
             output(Pack, actiontype)
             driver.find_element(By.CLASS_NAME, "form-control").clear()
          except NoSuchElementException or NoAlertPresentException:
-            driver.find_element(By.CLASS_NAME, "form-control").clear()
             info = ("Не"+ actiontype + "\n")
             output(Pack, info)
-            Pack_status(Packlist, link, email, password, sublink)
-            link_create(link, sublink)
+            #Pack_status(Packlist, link, email, password, sublink)
             show_notify('Что-то пошло не так)')
+            driver.find_element(By.CLASS_NAME, "form-control").clear()
+            pass
+         except NoAlertPresentException:
+            info = ("Не"+ actiontype + "\n")
+            output(Pack, info)
+            show_notify('Что-то пошло не так)')
+            driver.find_element(By.CLASS_NAME, "form-control").clear()
             pass
    show_notify('Процесс завершен')    
                          
@@ -377,6 +387,9 @@ clear_button = tk.Button(text = 'Очистить', bg = 'white', command = clea
 #--- Параметры кнопки очистки вывода ---
 clear_button.grid(row = 6, column=1, sticky='e')
 
+# --- Кнопка рестарта ---
+restart_button = tk.Button(text = 'Restart app', bg = 'white', )
+restart_button.grid(row = 5, column=1, sticky='e')
 # --- Поле текстового вывода и его параметры --- 
 t = Text(root,height=30,width= 35,wrap = WORD)
 t.grid(row = 7, rowspan=15 , column = 1, sticky="nes")
