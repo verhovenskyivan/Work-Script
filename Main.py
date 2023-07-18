@@ -53,10 +53,11 @@ def output(Object, actiontype):
    t.focus_force() 
    t.see('end')    
 
-'''@cache
+@cache
 def restart():
-   python = sys.executable
-   os.restart('Main.py')'''
+   sys.exit(0)
+   subprocess.call(['python',"Main.py"])
+
    
 '''@cache 
 def definition():
