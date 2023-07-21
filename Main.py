@@ -13,7 +13,7 @@ from functools import cache
 from tkinter.ttk import *
 from tkinter import *
 import tkinter as tk
-import  re, time, sys, os
+import  re, time, sys, os, subprocess
 
 s = Service('./workscript-main/chromedriver.exe')
 s.creationflags = CREATE_NO_WINDOW
@@ -57,7 +57,7 @@ def output(Object, actiontype):
 def restart():
    sys.exit(0)
    subprocess.call(['python',"Main.py"])
-
+   
    
 '''@cache 
 def definition():
@@ -161,6 +161,7 @@ def Pack_act(Packlist, link, email, password, sublink, search_button, act_button
             driver.find_element(By.NAME, search_button).send_keys(Keys.ENTER)
             driver.find_element(By.CLASS_NAME, "form-control").clear()
             pass
+         break
    show_notify('Процесс завершен')
    
 @cache
@@ -188,6 +189,7 @@ def Pack_Perenos(Packlist, link, email, password, sublink, search_button, act_bu
             show_notify('Что-то пошло не так)')
             driver.find_element(By.CLASS_NAME, "form-control").clear()
             pass
+         break
    show_notify('Процесс завершен')    
                          
 @cache
@@ -231,7 +233,8 @@ def Order_status(Orderlist, link, email, password, status_sublink):
                      f'//*[@id="order{index}Status"]').text
               output(Order, info)           
               driver.find_element(By.NAME, 'filterValue').clear()  
-              pass   
+              pass  
+         break 
    show_notify('Процесс завершен')
 
 @cache
