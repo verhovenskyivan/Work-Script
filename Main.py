@@ -160,8 +160,7 @@ def Pack_act(Packlist, link, email, password, sublink, search_button, act_button
             driver.find_element(By.CLASS_NAME, "form-control").send_keys(Pack)#Ввод в графу поиска
             driver.find_element(By.NAME, search_button).send_keys(Keys.ENTER)
             driver.find_element(By.CLASS_NAME, "form-control").clear()
-            pass
-         break
+            pass  
    show_notify('Процесс завершен')
    
 @cache
@@ -189,7 +188,7 @@ def Pack_Perenos(Packlist, link, email, password, sublink, search_button, act_bu
             show_notify('Что-то пошло не так)')
             driver.find_element(By.CLASS_NAME, "form-control").clear()
             pass
-         break
+      break
    show_notify('Процесс завершен')    
                          
 @cache
@@ -234,7 +233,6 @@ def Order_status(Orderlist, link, email, password, status_sublink):
               output(Order, info)           
               driver.find_element(By.NAME, 'filterValue').clear()  
               pass  
-         break 
    show_notify('Процесс завершен')
 
 @cache
